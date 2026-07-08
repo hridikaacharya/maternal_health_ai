@@ -1,0 +1,13 @@
+Here are the names of documents used to extract information for the csv files:
+
+1. WHO recommendations on antenatal care for a positive pregnancy experience
+2. WHO recommendations on maternal health: guidelines approved by the WHO Guidelines Review Committee (Second Edition)
+3. Nepal Safe Motherhood and Newborn Health Road Map 2030
+4. National Female Community Health Volunteer Program Strategy
+5. Maternal and Perinatal Death Surveillance and Response (MPDSR) Training Manual for Hospital
+6. Nepal Maternal Mortality Study 2021 / Report on Maternal Mortality
+7. Maternal Mortality in Nepal: Identifying High-Risk Groups Through Census Data
+8. Digital Adaptation Kit for Antenatal Care: Operational requirements for implementing WHO recommendations in digital systems
+10. Maternal and Perinatal Death Surveillance and Response (MPDSR) Orientation Manual for Female Community Health Volunteers (मातृ तथा पेरिनेटल मृत्यु निगरानी तथा प्रतिकार्य (MPDSR) अभिमुखीकरण पुस्तिका - महिला सामुदायिक स्वास्थ्य स्वयंसेविकाका लागि)
+11. WHO Guideline on Antenatal Care (2016) Overview (Presentation)
+12. Nepal Demographic and Health Survey 2022
