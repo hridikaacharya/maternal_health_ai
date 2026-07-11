@@ -1,0 +1,85 @@
+{
+  "appTitle": "TODO",
+  "appSubtitle": "TODO",
+  "language": {
+    "label": "TODO",
+    "english": "TODO",
+    "nepali": "TODO"
+  },
+  "sections": {
+    "screening": "TODO",
+    "vitals": "TODO",
+    "anc": "TODO",
+    "dangerSigns": "TODO",
+    "referral": "TODO",
+    "education": "TODO"
+  },
+  "fields": {
+    "bpSystolic": "TODO",
+    "bpDiastolic": "TODO",
+    "weight": "TODO",
+    "haemoglobin": "TODO",
+    "maternalAge": "TODO",
+    "gestationalAge": "TODO",
+    "proteinuria": "TODO",
+    "ancVisitsCompleted": "TODO",
+    "validTtcvHistory": "TODO"
+  },
+  "placeholders": {
+    "bpSystolic": "TODO",
+    "bpDiastolic": "TODO",
+    "weight": "TODO",
+    "haemoglobin": "TODO",
+    "maternalAge": "TODO",
+    "gestationalAge": "TODO",
+    "ancVisitsCompleted": "TODO"
+  },
+  "dangerSigns": {
+    "unconscious": "TODO",
+    "convulsions": "TODO",
+    "vaginal_bleeding": "TODO",
+    "severe_abdominal_pain": "TODO",
+    "severe_difficulty_breathing": "TODO",
+    "fever": "TODO",
+    "foul_smelling_discharge": "TODO",
+    "severe_headache": "TODO",
+    "blurred_vision": "TODO",
+    "water_broke": "TODO",
+    "reduced_fetal_movements": "TODO",
+    "suicidal_ideation": "TODO"
+  },
+  "proteinuriaOptions": {
+    "none": "TODO",
+    "plus": "TODO",
+    "plusplus": "TODO",
+    "plusplusplus": "TODO"
+  },
+  "ttcvOptions": {
+    "unknown": "TODO",
+    "yes": "TODO",
+    "no": "TODO"
+  },
+  "actions": {
+    "runScreening": "TODO",
+    "reset": "TODO"
+  },
+  "status": {
+    "ready": "TODO",
+    "saving": "TODO",
+    "saved": "TODO",
+    "error": "TODO"
+  },
+  "result": {
+    "noneTitle": "TODO",
+    "noneBody": "TODO",
+    "rule": "TODO",
+    "facility": "TODO",
+    "why": "TODO",
+    "source": "TODO",
+    "saved": "TODO"
+  },
+  "education": {
+    "title": "TODO",
+    "body": "TODO"
+  }
+}

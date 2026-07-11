@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FCHV screening — MVP demo</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 0 auto; padding: 20px; background: #fafaf8; color: #222; }
+  h1 { font-size: 20px; }
+  .field { margin-bottom: 14px; }
+  label { display: block; font-weight: 500; margin-bottom: 4px; font-size: 14px; }
+  input[type=number], select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+  .checkbox-row label { margin: 0; font-weight: 400; }
+  button { background: #0f6e56; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-size: 15px; cursor: pointer; width: 100%; margin-top: 10px; }
+  button:hover { background: #085041; }
+  #result { margin-top: 24px; padding: 16px; border-radius: 10px; display: none; }
+  .risk-emergency { background: #fcebeb; border: 1px solid #e24b4a; }
+  .risk-urgent { background: #faeeda; border: 1px solid #ba7517; }
+  .risk-moderate { background: #faeeda; border: 1px solid #ba7517; }
+  .risk-low { background: #e1f5ee; border: 1px solid #0f6e56; }
+  .risk-none { background: #e1f5ee; border: 1px solid #0f6e56; }
+  #result h2 { margin-top: 0; font-size: 17px; }
+  .source-note { font-size: 12px; color: #666; margin-top: 8px; }
+  .section-label { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; margin: 20px 0 8px; }
+</style>
+</head>
+<body>
+
+<h1>FCHV screening — MVP demo</h1>
+<p style="color:#555; font-size:14px;">Deterministic rule-based screening. Every result traces to a rule and a source citation — nothing here is AI-generated.</p>
+
+<div class="section-label">Vitals</div>
+<div class="field">
+  <label for="bp_systolic">Systolic BP</label>
+  <input type="number" id="bp_systolic" placeholder="e.g. 120">
+</div>
+<div class="field">
+  <label for="bp_diastolic">Diastolic BP</label>
+  <input type="number" id="bp_diastolic" placeholder="e.g. 80">
+</div>
+<div class="field">
+  <label for="weight">Weight (kg)</label>
+  <input type="number" id="weight" placeholder="e.g. 58">
+</div>
+<div class="field">
+  <label for="haemoglobin">Haemoglobin (g/dL)</label>
+  <input type="number" id="haemoglobin" step="0.1" placeholder="e.g. 11.5">
+</div>
+<div class="field">
+  <label for="maternal_age">Maternal age</label>
+  <input type="number" id="maternal_age" placeholder="e.g. 24">
+</div>
+<div class="field">
+  <label for="gestational_age_weeks">Gestational age (weeks)</label>
+  <input type="number" id="gestational_age_weeks" placeholder="e.g. 22">
+</div>
+
+<div class="section-label">Danger signs (check all that apply)</div>
+<div id="checkboxContainer"></div>
+
+<button onclick="runScreening()">Run screening</button>
+
+<div id="result"></div>
+
+<script>
+const checkboxVars = [
+  ['unconscious', 'Unconscious'],
+  ['convulsions', 'Convulsions / fits'],
+  ['vaginal_bleeding', 'Vaginal bleeding'],
+  ['severe_abdominal_pain', 'Severe abdominal pain'],
+  ['severe_difficulty_breathing', 'Severe difficulty breathing'],
+  ['fever', 'Fever'],
+  ['foul_smelling_discharge', 'Foul-smelling discharge'],
+  ['severe_headache', 'Severe headache'],
+  ['blurred_vision', 'Blurred vision'],
+  ['water_broke', 'Water broke / leaking fluid'],
+  ['reduced_fetal_movements', 'Reduced fetal movements'],
+  ['suicidal_ideation', 'Suicidal thoughts'],
+];
+
+const container = document.getElementById('checkboxContainer');
+checkboxVars.forEach(([id, label]) => {
+  const row = document.createElement('div');
+  row.className = 'checkbox-row';
+  row.innerHTML = `<input type="checkbox" id="${id}"><label for="${id}">${label}</label>`;
+  container.appendChild(row);
+});
+
+let RULES = [];
+fetch('rules.json').then(r => r.json()).then(data => { RULES = data.rules; });
+
+function evaluateClause(clause, input) {
+  const inputValue = input[clause.variable];
+  if (inputValue === undefined || inputValue === null || inputValue === '') {
+    if (clause.value === 'unknown') return true;
+    return false;
+  }
+  const b = isNaN(Number(clause.value)) ? clause.value : Number(clause.value);
+  const aNum = isNaN(Number(inputValue)) ? null : Number(inputValue);
+  switch (clause.operator) {
+    case '=': case '==': return String(inputValue).toLowerCase() === String(b).toLowerCase();
+    case '>=': return aNum !== null && aNum >= b;
+    case '<=': return aNum !== null && aNum <= b;
+    case '>': return aNum !== null && aNum > b;
+    case '<': return aNum !== null && aNum < b;
+    default: return false;
+  }
+}
+
+function evaluateRule(rule, input) {
+  const results = rule.clauses.map(c => evaluateClause(c, input));
+  if (rule.operator === 'OR') return results.some(Boolean);
+  if (rule.operator === 'AND') return results.every(Boolean);
+  return results[0];
+}
+
+function runScreening() {
+  const input = {
+    bp_systolic: document.getElementById('bp_systolic').value,
+    bp_diastolic: document.getElementById('bp_diastolic').value,
+    weight: document.getElementById('weight').value,
+    haemoglobin: document.getElementById('haemoglobin').value,
+    maternal_age: document.getElementById('maternal_age').value,
+    gestational_age_weeks: document.getElementById('gestational_age_weeks').value,
+  };
+  checkboxVars.forEach(([id]) => {
+    if (document.getElementById(id).checked) input[id] = 'yes';
+  });
+
+  let primary = null;
+  const sorted = [...RULES].sort((a, b) => a.priority - b.priority);
+  for (const rule of sorted) {
+    if (evaluateRule(rule, input)) {
+      primary = rule;
+      if (rule.rule_outcome === 'STOP') break;
+    }
+  }
+
+  const resultDiv = document.getElementById('result');
+  resultDiv.style.display = 'block';
+  if (!primary) {
+    resultDiv.className = 'risk-none';
+    resultDiv.innerHTML = '<h2>No flags triggered</h2><p>Continue routine ANC care and scheduled education.</p>';
+    return;
+  }
+
+  const riskClass = 'risk-' + primary.risk_level.toLowerCase();
+  resultDiv.className = riskClass;
+  resultDiv.innerHTML = `
+    <h2>${primary.risk_level}: ${primary.recommendation}</h2>
+    <p><strong>Rule:</strong> ${primary.rule_name} (#${primary.rule_id})</p>
+    <p><strong>Facility:</strong> ${primary.facility_level}</p>
+    <p><strong>Why:</strong> ${primary.explanation}</p>
+    <div class="source-note">Source: ${primary.source.citations.join('; ')} (p. ${primary.source.pages.join('; ')})</div>
+  `;
+}
+</script>
+
+</body>
+</html>

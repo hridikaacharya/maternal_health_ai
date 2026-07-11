@@ -1,0 +1,695 @@
+{
+  "_meta": {
+    "generated_by": "scripts/normalize.js",
+    "generated_at": "2026-07-11T18:02:20.532Z",
+    "haemoglobin_unit_assumption": "g/dL, moderate band corrected to 7-11 (was 7-110 in source)",
+    "unmapped_variables_warning": "Any variable not in VARIABLE_ALIASES passes through unchanged — check console output below for gaps."
+  },
+  "rules": [
+    {
+      "rule_id": 1,
+      "priority": 1,
+      "rule_name": "Suspected Emergency Obstetric Complication",
+      "operator": "OR",
+      "clauses": [
+        {
+          "variable": "unconscious",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "convulsions",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "vaginal_bleeding",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "severe_abdominal_pain",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "High",
+      "education_module": "Danger Signs",
+      "explanation": "These signs indicate life-threatening complications requiring immediate stabilization.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "Digital ANC Who guidelines"
+        ],
+        "pages": [
+          "91, 105"
+        ]
+      }
+    },
+    {
+      "rule_id": 2,
+      "priority": 1,
+      "rule_name": "Suspected Severe Respiratory Complication",
+      "operator": "OR",
+      "clauses": [
+        {
+          "variable": "severe_difficulty_breathing",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "central_cyanosis",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "High",
+      "education_module": "Danger Signs",
+      "explanation": "Indicates potential heart disease, pneumonia, or ARDS.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "Digital ANC Who guidelines"
+        ],
+        "pages": [
+          "91, 105"
+        ]
+      }
+    },
+    {
+      "rule_id": 3,
+      "priority": 1,
+      "rule_name": "Suspected Postpartum Haemorrhage",
+      "operator": null,
+      "clauses": [
+        {
+          "variable": "vaginal_bleeding",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Postpartum",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "High",
+      "education_module": "Danger Signs",
+      "explanation": "Severe bleeding can kill a healthy woman within hours of birth.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "SMNH Roadmap 2030"
+        ],
+        "pages": [
+          "391, 472"
+        ]
+      }
+    },
+    {
+      "rule_id": 4,
+      "priority": 1,
+      "rule_name": "Suspected Severe Sepsis",
+      "operator": "AND",
+      "clauses": [
+        {
+          "variable": "fever",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "foul_smelling_discharge",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "High",
+      "education_module": "Danger Signs",
+      "explanation": "Indicates severe pregnancy-related infection/sepsis.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "SMNH Roadmap 2030"
+        ],
+        "pages": [
+          "472"
+        ]
+      }
+    },
+    {
+      "rule_id": 5,
+      "priority": 1,
+      "rule_name": "Suspected Shock",
+      "operator": "OR",
+      "clauses": [
+        {
+          "variable": "shock",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "fainting",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "unrecordable_bp_pulse",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "Medium",
+      "education_module": "Danger Signs",
+      "explanation": "Shock is an immediate life-threatening emergency.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "SMNH Roadmap 2030"
+        ],
+        "pages": [
+          "467, 472"
+        ]
+      }
+    },
+    {
+      "rule_id": 6,
+      "priority": 1,
+      "rule_name": "Suspected Severe Hypertension",
+      "operator": "OR",
+      "clauses": [
+        {
+          "variable": "bp_systolic",
+          "operator": ">=",
+          "value": "160"
+        },
+        {
+          "variable": "bp_diastolic",
+          "operator": ">=",
+          "value": "110"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "Medium",
+      "education_module": "Preeclampsia",
+      "explanation": "Severe hypertension leads to complications like stroke or organ failure.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "WHO recommendations on maternal health"
+        ],
+        "pages": [
+          "398, 559"
+        ]
+      }
+    },
+    {
+      "rule_id": 9,
+      "priority": 1,
+      "rule_name": "Suspected Severe Anaemia",
+      "operator": null,
+      "clauses": [
+        {
+          "variable": "haemoglobin",
+          "operator": "<",
+          "value": "7"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "Low",
+      "education_module": "Iron Supplementation",
+      "explanation": "Severe anaemia carries an extremely high risk of maternal and infant mortality.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "NDHS2022"
+        ],
+        "pages": [
+          "333"
+        ]
+      }
+    },
+    {
+      "rule_id": 7,
+      "priority": 2,
+      "rule_name": "Suspected Preeclampsia",
+      "operator": "AND",
+      "clauses": [
+        {
+          "variable": "bp_systolic",
+          "operator": ">=",
+          "value": "140"
+        },
+        {
+          "variable": "bp_systolic",
+          "operator": "<",
+          "value": "160"
+        },
+        {
+          "variable": "proteinuria",
+          "operator": ">=",
+          "value": "2"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Urgent",
+      "recommendation": "Refer urgently",
+      "facility_level": "Referral Hospital",
+      "confidence": "Low",
+      "education_module": "Preeclampsia",
+      "explanation": "Preeclampsia is a leading cause of maternal death and requires surveillance.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "Digital ANC Who guidelines"
+        ],
+        "pages": [
+          "101, 102"
+        ]
+      }
+    },
+    {
+      "rule_id": 8,
+      "priority": 2,
+      "rule_name": "Suspected Severe Preeclampsia",
+      "operator": "AND",
+      "clauses": [
+        {
+          "variable": "severe_headache",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "blurred_vision",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "gestational_age_weeks",
+          "operator": ">=",
+          "value": "28"
+        }
+      ],
+      "gestational_stage": "Third trimester",
+      "risk_level": "Urgent",
+      "recommendation": "Refer urgently",
+      "facility_level": "Referral Hospital",
+      "confidence": "High",
+      "education_module": "Preeclampsia",
+      "explanation": "Neurological triggers for suspected severe preeclampsia in late pregnancy.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "Maternal Health AI Platform Design"
+        ],
+        "pages": [
+          "235"
+        ]
+      }
+    },
+    {
+      "rule_id": 11,
+      "priority": 2,
+      "rule_name": "Suspected Fetal Distress",
+      "operator": "AND",
+      "clauses": [
+        {
+          "variable": "reduced_fetal_movements",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "gestational_age_weeks",
+          "operator": ">=",
+          "value": "28"
+        }
+      ],
+      "gestational_stage": "Third trimester",
+      "risk_level": "Urgent",
+      "recommendation": "Visit Health Post today",
+      "facility_level": "Health Post",
+      "confidence": "High",
+      "education_module": "Fetal Movement",
+      "explanation": "Perception of reduced movement is associated with fetal distress or hypoxia.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "WHO recommendations on maternal health"
+        ],
+        "pages": [
+          "487"
+        ]
+      }
+    },
+    {
+      "rule_id": 12,
+      "priority": 2,
+      "rule_name": "Suspected Rupture of Membranes",
+      "operator": null,
+      "clauses": [
+        {
+          "variable": "water_broke",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "High",
+      "education_module": "Danger Signs",
+      "explanation": "Risk of chorioamnionitis and infection if membranes remain ruptured.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "Maternal Health AI Platform Design"
+        ],
+        "pages": [
+          "233"
+        ]
+      }
+    },
+    {
+      "rule_id": 13,
+      "priority": 2,
+      "rule_name": "Suspected Mental Health Emergency",
+      "operator": null,
+      "clauses": [
+        {
+          "variable": "suicidal_ideation",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Emergency",
+      "recommendation": "Go to Referral Hospital immediately",
+      "facility_level": "Referral Hospital",
+      "confidence": "High",
+      "education_module": "Mental Health",
+      "explanation": "High risk of self-harm requires immediate professional intervention.",
+      "rule_outcome": "STOP",
+      "source": {
+        "citations": [
+          "NDHS2022"
+        ],
+        "pages": [
+          "351, 368"
+        ]
+      }
+    },
+    {
+      "rule_id": 14,
+      "priority": 2,
+      "rule_name": "Suspected Major Depression",
+      "operator": null,
+      "clauses": [
+        {
+          "variable": "phq_9_score",
+          "operator": ">=",
+          "value": "10"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Urgent",
+      "recommendation": "Refer urgently",
+      "facility_level": "Referral Hospital",
+      "confidence": "High",
+      "education_module": "Mental Health",
+      "explanation": "Validated score for major depression requires clinical follow-up.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "NDHS2022"
+        ],
+        "pages": [
+          "255, 351"
+        ]
+      }
+    },
+    {
+      "rule_id": 10,
+      "priority": 3,
+      "rule_name": "Suspected Anaemia",
+      "operator": "AND",
+      "clauses": [
+        {
+          "variable": "haemoglobin",
+          "operator": ">=",
+          "value": "7"
+        },
+        {
+          "variable": "haemoglobin",
+          "operator": "<",
+          "value": "11"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Moderate",
+      "recommendation": "Visit Health Post today",
+      "facility_level": "Health Post",
+      "confidence": "Low",
+      "education_module": "Iron Supplementation",
+      "explanation": "Anaemia increases the risk of mortality from haemorrhage and infection.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "WHO recommendations on maternal health"
+        ],
+        "pages": [
+          "477, 485"
+        ]
+      }
+    },
+    {
+      "rule_id": 15,
+      "priority": 3,
+      "rule_name": "Suspected High Risk for Preeclampsia",
+      "operator": "OR",
+      "clauses": [
+        {
+          "variable": "previous_preeclampsia",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "diabetes",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "chronic_hypertension",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "multiple_pregnancy",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Moderate",
+      "recommendation": "Monitor symptoms",
+      "facility_level": "Health Post",
+      "confidence": "High",
+      "education_module": "Preeclampsia",
+      "explanation": "Risk factors necessitate closer surveillance and potential aspirin prophylaxis.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "WHO recommendations on maternal health"
+        ],
+        "pages": [
+          "395"
+        ]
+      }
+    },
+    {
+      "rule_id": 16,
+      "priority": 3,
+      "rule_name": "Risk for Gestational Diabetes",
+      "operator": "OR",
+      "clauses": [
+        {
+          "variable": "bmi",
+          "operator": ">",
+          "value": "30"
+        },
+        {
+          "variable": "previous_gdm",
+          "operator": "=",
+          "value": "yes"
+        },
+        {
+          "variable": "family_history_diabetes",
+          "operator": "=",
+          "value": "yes"
+        }
+      ],
+      "gestational_stage": "Second trimester",
+      "risk_level": "Moderate",
+      "recommendation": "Visit Health Post today",
+      "facility_level": "Health Post",
+      "confidence": "Medium",
+      "education_module": "Nutrition",
+      "explanation": "Screening identifies hyperglycaemia that can lead to macrosomia.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "Who Guidelines ANC"
+        ],
+        "pages": [
+          "481, 655"
+        ]
+      }
+    },
+    {
+      "rule_id": 17,
+      "priority": 3,
+      "rule_name": "Adolescent Pregnancy",
+      "operator": null,
+      "clauses": [
+        {
+          "variable": "maternal_age",
+          "operator": "<=",
+          "value": "19"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Moderate",
+      "recommendation": "Visit Health Post today",
+      "facility_level": "Health Post",
+      "confidence": "High",
+      "education_module": "Birth Preparedness",
+      "explanation": "Adolescents face higher risks of complications and social barriers to care.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "Digital ANC Who guidelines"
+        ],
+        "pages": [
+          "43"
+        ]
+      }
+    },
+    {
+      "rule_id": 18,
+      "priority": 4,
+      "rule_name": "Routine ANC Initiation",
+      "operator": "AND",
+      "clauses": [
+        {
+          "variable": "gestational_age_weeks",
+          "operator": "<",
+          "value": "12"
+        },
+        {
+          "variable": "anc_visits_completed",
+          "operator": "=",
+          "value": "0"
+        }
+      ],
+      "gestational_stage": "First trimester",
+      "risk_level": "Low",
+      "recommendation": "Book ANC within 24 hours",
+      "facility_level": "Health Post",
+      "confidence": "High",
+      "education_module": "ANC Schedule",
+      "explanation": "Early initiation of ANC allows for baseline assessment and screening.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "SMNH Roadmap 2030"
+        ],
+        "pages": [
+          "406"
+        ]
+      }
+    },
+    {
+      "rule_id": 19,
+      "priority": 4,
+      "rule_name": "Tetanus Vaccination Required",
+      "operator": null,
+      "clauses": [
+        {
+          "variable": "valid_ttcv_history",
+          "operator": "=",
+          "value": "no"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Low",
+      "recommendation": "Book ANC within 24 hours",
+      "facility_level": "Health Post",
+      "confidence": "High",
+      "education_module": "Immunization",
+      "explanation": "Prevents neonatal mortality from tetanus.",
+      "rule_outcome": "CONTINUE",
+      "source": {
+        "citations": [
+          "Digital ANC Who guidelines"
+        ],
+        "pages": [
+          "43"
+        ]
+      }
+    },
+    {
+      "rule_id": 20,
+      "priority": 5,
+      "rule_name": "Missing Clinical Data",
+      "operator": "OR",
+      "clauses": [
+        {
+          "variable": "bp_systolic",
+          "operator": "=",
+          "value": "unknown"
+        },
+        {
+          "variable": "weight",
+          "operator": "=",
+          "value": "unknown"
+        }
+      ],
+      "gestational_stage": "Any",
+      "risk_level": "Moderate",
+      "recommendation": "Obtain missing measurements",
+      "facility_level": "Health Post",
+      "confidence": "High",
+      "education_module": "ANC Schedule",
+      "explanation": "Vitals are essential for identifying asymptomatic risks like hypertension.",
+      "rule_outcome": "ASK_FOR_DATA",
+      "source": {
+        "citations": [
+          "Maternal Health AI Platform Design"
+        ],
+        "pages": [
+          "237"
+        ]
+      }
+    }
+  ]
+}

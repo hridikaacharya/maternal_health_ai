@@ -1,0 +1,31 @@
+node_modules/
+dist/
+coverage/
+.vite/
+.turbo/
+
+# Dependency/package manager state
+.pnpm-store/
+.npm/
+.yarn/
+
+# TypeScript / build caches
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor clutter
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,85 @@
+{
+  "appTitle": "Maternal Health Screening MVP",
+  "appSubtitle": "Deterministic, offline-first screening for FCHVs in Nepal.",
+  "language": {
+    "label": "Language",
+    "english": "English",
+    "nepali": "Nepali"
+  },
+  "sections": {
+    "screening": "Screening",
+    "vitals": "Vitals",
+    "anc": "ANC and history",
+    "dangerSigns": "Danger signs",
+    "referral": "Referral result",
+    "education": "Education"
+  },
+  "fields": {
+    "bpSystolic": "Systolic BP",
+    "bpDiastolic": "Diastolic BP",
+    "weight": "Weight (kg)",
+    "haemoglobin": "Haemoglobin (g/dL)",
+    "maternalAge": "Maternal age",
+    "gestationalAge": "Gestational age (weeks)",
+    "proteinuria": "Proteinuria",
+    "ancVisitsCompleted": "ANC visits completed",
+    "validTtcvHistory": "Valid TTCV history"
+  },
+  "placeholders": {
+    "bpSystolic": "e.g. 120",
+    "bpDiastolic": "e.g. 80",
+    "weight": "e.g. 58",
+    "haemoglobin": "e.g. 11.5",
+    "maternalAge": "e.g. 24",
+    "gestationalAge": "e.g. 22",
+    "ancVisitsCompleted": "e.g. 4"
+  },
+  "dangerSigns": {
+    "unconscious": "Unconscious",
+    "convulsions": "Convulsions / fits",
+    "vaginal_bleeding": "Vaginal bleeding",
+    "severe_abdominal_pain": "Severe abdominal pain",
+    "severe_difficulty_breathing": "Severe difficulty breathing",
+    "fever": "Fever",
+    "foul_smelling_discharge": "Foul-smelling discharge",
+    "severe_headache": "Severe headache",
+    "blurred_vision": "Blurred vision",
+    "water_broke": "Water broke / leaking fluid",
+    "reduced_fetal_movements": "Reduced fetal movements",
+    "suicidal_ideation": "Suicidal thoughts"
+  },
+  "proteinuriaOptions": {
+    "none": "None",
+    "plus": "+",
+    "plusplus": "++",
+    "plusplusplus": "+++"
+  },
+  "ttcvOptions": {
+    "unknown": "Not recorded",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "actions": {
+    "runScreening": "Run screening",
+    "reset": "Reset form"
+  },
+  "status": {
+    "ready": "Complete the form and run screening.",
+    "saving": "Saving locally...",
+    "saved": "Saved locally for offline review.",
+    "error": "Could not save locally. You can still review the result."
+  },
+  "result": {
+    "noneTitle": "No flags triggered",
+    "noneBody": "Continue routine ANC care and scheduled education.",
+    "rule": "Rule",
+    "facility": "Facility",
+    "why": "Why",
+    "source": "Source",
+    "saved": "Local save"
+  },
+  "education": {
+    "title": "Education placeholder",
+    "body": "This section will later surface module content tied to the matched rule."
+  }
+}

@@ -1,0 +1,27 @@
+Maternal Health AI Platform Knowledge Base
+
+1. Decision_Rules.csv
+   - Emergency triage logic
+   - Risk detection
+   - Referral recommendations
+
+2. ANC_Visits.csv
+   - Visit timeline
+   - Required assessments
+   - Investigations
+   - Counselling
+
+3. Pregnancy_Timeline.csv
+   - Stage-based information
+   - Milestones
+   - Warning signs
+
+4. Symptoms.csv
+   - Symptom recognition
+   - Severity classification
+   - Follow-up questions
+
+5. Educational_Modules.csv
+   - Patient-facing education
+   - Trigger conditions
+   - Personalization variables
