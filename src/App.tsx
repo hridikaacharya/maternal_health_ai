@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-import { EducationPlaceholder } from '@/features/education/EducationPlaceholder';
+import { EducationPanel } from '@/features/education/EducationPanel';
 import { ReferralResult } from '@/features/referral/ReferralResult';
 import { ScreeningForm } from '@/features/screening/ScreeningForm';
 import { useScreeningStore } from '@/store/useScreeningStore';
+import { ChatScreen } from '@/features/chat/ChatScreen';
 
 export default function App() {
   const { t, i18n } = useTranslation();
@@ -26,7 +26,8 @@ export default function App() {
       <div className="layout">
         <div className="stack">
           <ScreeningForm language={i18n.language} />
-          <EducationPlaceholder />
+          <ChatScreen />
+          <EducationPanel result={result} />
         </div>
         <ReferralResult result={result} />
       </div>
