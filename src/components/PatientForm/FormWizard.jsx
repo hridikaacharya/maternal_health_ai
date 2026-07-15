@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
-import ProgressSteps from './ProgressSteps';
-import Step1Profile from './Step1Profile';
-import Step2Symptoms from './Step2Symptoms';
-import Step3History from './Step3History';
-import TriageOutput from './TriageOutput';
-import { evaluateClinicalRisk } from '../../services/clinicalEngine';
-import { generateBilingualExplanation } from '../../services/geminiService';
+import React, { useState } from "react";
+import ProgressSteps from "./ProgressSteps";
+import Step1Profile from "./Step1Profile";
+import Step2Symptoms from "./Step2Symptoms";
+import Step3History from "./Step3History";
+import TriageOutput from "./TriageOutput";
+import { evaluateClinicalRisk } from "../../services/clinicalEngine";
+import { generateBilingualExplanation } from "../../services/geminiService";
 
 const initialFormState = {
-  age: '',
+  age: "",
   weeksPregnant: 20,
-  isFirstPregnancy: 'yes',
-  bloodPressureSys: '',
-  bloodPressureDia: '',
+  isFirstPregnancy: "yes",
+  bloodPressureSys: "",
+  bloodPressureDia: "",
   symptoms: [],
   conditions: [],
-  ancVisits: '0',
-  tookIron: 'unknown',
+  ancVisits: "0",
+  tookIron: "unknown",
 };
 
-export default function FormWizard({ onAlertTriggered }) {
+export default function FormWizard({ onAlertTriggered, currentUser }) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(initialFormState);
   const [assessment, setAssessment] = useState(null);
   const [translation, setTranslation] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [apiError, setApiError] = useState('');
+  const [apiError, setApiError] = useState("");
 
   const updateField = (patch) => setFormData((prev) => ({ ...prev, ...patch }));
 
@@ -47,19 +47,55 @@ export default function FormWizard({ onAlertTriggered }) {
 
   const runTriageFlow = async () => {
     setIsProcessing(true);
-    setApiError('');
+    setApiError("");
     setTranslation(null);
 
     const result = evaluateClinicalRisk(formData);
     setAssessment(result);
 
-    if (result.riskLevel === 'EMERGENCY' || result.riskLevel === 'URGENT') {
+    const timestampStr =
+      new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }) +
+      " " +
+      new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    // 1. SAVE TO LOCALSTORAGE CACHE
+    const stored = JSON.parse(
+      localStorage.getItem("sathi_assessments") || "[]",
+    );
+    const newRecord = {
+      id: Date.now(),
+      userId: currentUser?.id || "anonymous",
+      timestamp: timestampStr,
+      weeksPregnant: formData.weeksPregnant,
+      ancVisits: formData.ancVisits,
+      symptoms: formData.symptoms,
+      riskLevel: result.riskLevel,
+      action: result.action,
+      reason: result.reason,
+      color: result.color || "#10B981",
+    };
+    localStorage.setItem(
+      "sathi_assessments",
+      JSON.stringify([newRecord, ...stored]),
+    );
+
+    // 2. Trigger FCHV warning if critical
+    if (result.riskLevel === "EMERGENCY" || result.riskLevel === "URGENT") {
       onAlertTriggered({
         id: Date.now(),
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         weeks: formData.weeksPregnant,
         riskLevel: result.riskLevel,
-        symptoms: formData.symptoms.length ? formData.symptoms.join(', ') : 'No explicit signs reported',
+        symptoms: formData.symptoms.length
+          ? formData.symptoms.join(", ")
+          : "No explicit signs reported",
         resolved: false,
       });
     }
@@ -72,7 +108,7 @@ export default function FormWizard({ onAlertTriggered }) {
     } catch (err) {
       console.error(err);
       setApiError(
-        'The bilingual translation service could not be reached. The clinical result above is still accurate and unaffected.'
+        "The bilingual translation service could not be reached. The clinical result above is still accurate and unaffected.",
       );
     } finally {
       setIsProcessing(false);
@@ -83,7 +119,7 @@ export default function FormWizard({ onAlertTriggered }) {
     setFormData(initialFormState);
     setAssessment(null);
     setTranslation(null);
-    setApiError('');
+    setApiError("");
     setStep(1);
   };
 
@@ -91,7 +127,13 @@ export default function FormWizard({ onAlertTriggered }) {
     <div className="wizard-card">
       {step <= 3 && <ProgressSteps current={step} />}
 
-      {step === 1 && <Step1Profile formData={formData} updateField={updateField} onNext={() => setStep(2)} />}
+      {step === 1 && (
+        <Step1Profile
+          formData={formData}
+          updateField={updateField}
+          onNext={() => setStep(2)}
+        />
+      )}
       {step === 2 && (
         <Step2Symptoms
           formData={formData}
