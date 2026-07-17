@@ -1,5 +1,7 @@
-import React from "react";
-import { Lock, User as UserIcon, Sparkles } from "lucide-react";
+import React from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { colors, radius, shadow } from '../../theme/nativeTheme';
 
 export default function Header({
   currentView,
@@ -7,110 +9,151 @@ export default function Header({
   alertCount,
   currentUser,
 }) {
-  const isFchv = currentUser && currentUser.role === "fchv";
+  const isFchv = currentUser && currentUser.role === 'fchv';
+
+  const tabs = currentUser
+    ? [
+        { key: 'home', label: 'Home', icon: 'home' },
+        { key: 'patient', label: 'Patient Assessment', icon: 'clipboard' },
+        ...(isFchv ? [{ key: 'fchv', label: 'FCHV Dashboard', icon: 'alert-triangle', badge: alertCount }] : []),
+        { key: 'ai-explain', label: 'AI Explainer', icon: 'star' },
+        { key: 'profile', label: currentUser.name.split(' ')[0], icon: 'user' },
+      ]
+    : [
+        { key: 'home', label: 'Home', icon: 'home' },
+        { key: 'login', label: 'Sign In', icon: 'lock' },
+      ];
 
   return (
-    <header className="header">
-      <button
-        type="button"
-        className="header-brand"
-        onClick={() => onChangeView("home")}
-        aria-label="Go to home page"
-      >
-        <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true">
-          <path
-            d="M2 30 L14 12 L20 21 L26 10 L38 30 Z"
-            fill="var(--color-brand)"
-          />
-          <circle cx="26.5" cy="9" r="3.4" fill="var(--color-accent)" />
-        </svg>
-        <div>
-          <p className="header-title">Sathi</p>
-          <p className="header-subtitle">Maternal Health Companion · MHDSS</p>
-        </div>
-      </button>
+    <View style={styles.header}>
+      <Pressable onPress={() => onChangeView('home')} style={styles.brand} accessibilityLabel="Go to home page">
+        <View style={styles.logoMark}>
+          <View style={styles.logoPeak} />
+          <View style={styles.logoSun} />
+        </View>
+        <View>
+          <Text style={styles.title}>Sathi</Text>
+          <Text style={styles.subtitle}>Maternal Health Companion · MHDSS</Text>
+        </View>
+      </Pressable>
 
-      <div className="view-toggle" role="tablist" aria-label="Choose view">
-        {/* Rule 1: Home is universally visible */}
-        <button
-          type="button"
-          role="tab"
-          aria-selected={currentView === "home"}
-          className={`view-toggle-btn ${currentView === "home" ? "is-active" : ""}`}
-          onClick={() => onChangeView("home")}
-        >
-          Home
-        </button>
-
-        {/* Rule 2: Without logging in, NO ONE sees tabs other than Home and Login */}
-        {currentUser ? (
-          <>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={currentView === "patient"}
-              className={`view-toggle-btn ${currentView === "patient" ? "is-active" : ""}`}
-              onClick={() => onChangeView("patient")}
-            >
-              Patient Assessment
-            </button>
-
-            {/* Rule 3: FCHV Dashboard is strictly gated to the 'fchv' role */}
-            {isFchv && (
-              <button
-                type="button"
-                role="tab"
-                aria-selected={currentView === "fchv"}
-                className={`view-toggle-btn ${currentView === "fchv" ? "is-active" : ""}`}
-                onClick={() => onChangeView("fchv")}
-              >
-                FCHV Dashboard
-                {alertCount > 0 && (
-                  <span className="view-toggle-badge">{alertCount}</span>
-                )}
-              </button>
-            )}
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={currentView === "ai-explain"}
-              className={`view-toggle-btn ${currentView === "ai-explain" ? "is-active" : ""}`}
-              onClick={() => onChangeView("ai-explain")}
-              style={{ display: "flex", alignItems: "center", gap: "6px" }}
-            >
-              <Sparkles size={14} /> AI Explainer
-            </button>
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={currentView === "profile"}
-              className={`view-toggle-btn ${currentView === "profile" ? "is-active" : ""}`}
-              onClick={() => onChangeView("profile")}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                fontWeight: "bold",
-              }}
-            >
-              <UserIcon size={14} /> {currentUser.name.split(" ")[0]}
-            </button>
-          </>
-        ) : (
-          <button
-            type="button"
-            role="tab"
-            aria-selected={currentView === "login"}
-            className={`view-toggle-btn ${currentView === "login" ? "is-active" : ""}`}
-            onClick={() => onChangeView("login")}
-            style={{ display: "flex", alignItems: "center", gap: "6px" }}
-          >
-            <Lock size={14} /> Sign In
-          </button>
-        )}
-      </div>
-    </header>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs}>
+        {tabs.map((tab) => {
+          const active = currentView === tab.key;
+          return (
+            <Pressable key={tab.key} onPress={() => onChangeView(tab.key)} style={({ pressed }) => [styles.tab, active && styles.tabActive, pressed && styles.tabPressed]}>
+              <Feather name={tab.icon} size={14} color={active ? '#fff' : colors.textSoft} />
+              <Text style={[styles.tabText, active && styles.tabTextActive]}>{tab.label}</Text>
+              {tab.badge ? (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{tab.badge}</Text>
+                </View>
+              ) : null}
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 12,
+    gap: 12,
+  },
+  brand: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    alignSelf: 'flex-start',
+  },
+  logoMark: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadow,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  logoPeak: {
+    position: 'absolute',
+    left: 7,
+    bottom: 9,
+    width: 24,
+    height: 16,
+    backgroundColor: colors.brand,
+    transform: [{ skewX: '-22deg' }],
+  },
+  logoSun: {
+    position: 'absolute',
+    right: 7,
+    top: 6,
+    width: 8,
+    height: 8,
+    borderRadius: 99,
+    backgroundColor: colors.accent,
+  },
+  title: {
+    color: colors.text,
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  subtitle: {
+    color: colors.textSoft,
+    fontSize: 11,
+    letterSpacing: 0.7,
+    textTransform: 'uppercase',
+    marginTop: 3,
+  },
+  tabs: {
+    gap: 8,
+    paddingRight: 12,
+  },
+  tab: {
+    minHeight: 42,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 14,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  tabActive: {
+    backgroundColor: colors.brand,
+    borderColor: colors.brand,
+  },
+  tabPressed: {
+    opacity: 0.88,
+  },
+  tabText: {
+    color: colors.textSoft,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  tabTextActive: {
+    color: '#fff',
+  },
+  badge: {
+    marginLeft: 2,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 999,
+    paddingHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.accent,
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+});

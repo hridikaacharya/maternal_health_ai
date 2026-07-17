@@ -72,9 +72,9 @@ export async function generateBilingualExplanation(formData, clinicalResult) {
     return parseBilingualResponse(payload.explanation_text);
   }
 
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('Missing VITE_GEMINI_API_KEY. Add it to a .env.local file (see .env.example).');
+    throw new Error('Missing EXPO_PUBLIC_GEMINI_API_KEY. Add it to a .env.local file (see .env.example).');
   }
 
   const client = new GoogleGenAI({ apiKey });

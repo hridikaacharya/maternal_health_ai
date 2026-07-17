@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Sathi",
+    "slug": "sathi-mhdss",
+    "scheme": "sathi",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "web": {
+      "bundler": "metro"
+    },
+    "android": {
+      "package": "com.anonymous.sathimhdss"
+    }
+  }
+}

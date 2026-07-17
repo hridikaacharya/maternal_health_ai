@@ -1,113 +1,133 @@
 import React from 'react';
-import { Minus, Plus } from 'lucide-react';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { isWeeksValid } from '../../services/clinicalEngine';
+import { colors, radius, shadow } from '../../theme/nativeTheme';
 
 export default function Step1Profile({ formData, updateField, onNext }) {
   const weeks = Number(formData.weeksPregnant) || 0;
   const clampWeeks = (val) => Math.min(42, Math.max(1, val));
 
   return (
-    <div className="step">
-      <h2 className="step-title">Let's start with the basics</h2>
-      <p className="step-hint">This takes about a minute. You can go back and change anything.</p>
+    <View>
+      <Text style={styles.title}>Let's start with the basics</Text>
+      <Text style={styles.hint}>This takes about a minute. You can go back and change anything.</Text>
 
-      <div className="field">
-        <label className="field-label">How many weeks pregnant?</label>
-        <div className="stepper">
-          <button
-            type="button"
-            className="stepper-btn"
-            onClick={() => updateField({ weeksPregnant: clampWeeks(weeks - 1) })}
-            aria-label="Decrease weeks"
-          >
-            <Minus size={18} />
-          </button>
-          <div className="stepper-value">
-            <span className="stepper-number">{weeks}</span>
-            <span className="stepper-unit">weeks</span>
-          </div>
-          <button
-            type="button"
-            className="stepper-btn"
-            onClick={() => updateField({ weeksPregnant: clampWeeks(weeks + 1) })}
-            aria-label="Increase weeks"
-          >
-            <Plus size={18} />
-          </button>
-        </div>
-        <input
-          type="range"
-          min="1"
-          max="42"
-          value={weeks}
-          onChange={(e) => updateField({ weeksPregnant: clampWeeks(Number(e.target.value)) })}
-          className="range-slider"
-          aria-label="Weeks pregnant slider"
-        />
-      </div>
+      <View style={styles.field}>
+        <Text style={styles.label}>How many weeks pregnant?</Text>
+        <View style={styles.stepper}>
+          <Pressable onPress={() => updateField({ weeksPregnant: clampWeeks(weeks - 1) })} style={styles.stepperButton} accessibilityLabel="Decrease weeks">
+            <Feather name="minus" size={18} color={colors.text} />
+          </Pressable>
+          <View style={styles.stepperValue}>
+            <Text style={styles.stepperNumber}>{weeks}</Text>
+            <Text style={styles.stepperUnit}>weeks</Text>
+          </View>
+          <Pressable onPress={() => updateField({ weeksPregnant: clampWeeks(weeks + 1) })} style={styles.stepperButton} accessibilityLabel="Increase weeks">
+            <Feather name="plus" size={18} color={colors.text} />
+          </Pressable>
+        </View>
+      </View>
 
-      <div className="field">
-        <label className="field-label">Is this your first pregnancy?</label>
-        <div className="pill-group">
+      <View style={styles.field}>
+        <Text style={styles.label}>Is this your first pregnancy?</Text>
+        <View style={styles.pillRow}>
           {['yes', 'no'].map((val) => (
-            <button
-              key={val}
-              type="button"
-              className={`pill-btn ${formData.isFirstPregnancy === val ? 'is-active' : ''}`}
-              onClick={() => updateField({ isFirstPregnancy: val })}
-            >
-              {val === 'yes' ? 'Yes' : 'No'}
-            </button>
+            <Pressable key={val} onPress={() => updateField({ isFirstPregnancy: val })} style={({ pressed }) => [styles.pill, formData.isFirstPregnancy === val && styles.pillActive, pressed && styles.pressed]}>
+              <Text style={[styles.pillText, formData.isFirstPregnancy === val && styles.pillTextActive]}>{val === 'yes' ? 'Yes' : 'No'}</Text>
+            </Pressable>
           ))}
-        </div>
-      </div>
+        </View>
+      </View>
 
-      <div className="field">
-        <label className="field-label">Age</label>
-        <input
-          type="number"
-          inputMode="numeric"
+      <View style={styles.field}>
+        <Text style={styles.label}>Age</Text>
+        <TextInput
+          style={styles.input}
           placeholder="e.g. 24"
+          placeholderTextColor={colors.textFaint}
           value={formData.age}
-          onChange={(e) => updateField({ age: e.target.value })}
-          className="text-input"
+          keyboardType="numeric"
+          onChangeText={(value) => updateField({ age: value })}
         />
-      </div>
+      </View>
 
-      <div className="field">
-        <label className="field-label">
-          Blood pressure <span className="field-optional">(optional)</span>
-        </label>
-        <div className="bp-row">
-          <input
-            type="number"
-            inputMode="numeric"
+      <View style={styles.field}>
+        <Text style={styles.label}>
+          Blood pressure <Text style={styles.optional}>(optional)</Text>
+        </Text>
+        <View style={styles.bpRow}>
+          <TextInput
+            style={[styles.input, styles.bpInput]}
             placeholder="Systolic"
+            placeholderTextColor={colors.textFaint}
+            keyboardType="numeric"
             value={formData.bloodPressureSys}
-            onChange={(e) => updateField({ bloodPressureSys: e.target.value })}
-            className="text-input"
+            onChangeText={(value) => updateField({ bloodPressureSys: value })}
           />
-          <span className="bp-separator">/</span>
-          <input
-            type="number"
-            inputMode="numeric"
+          <Text style={styles.bpSeparator}>/</Text>
+          <TextInput
+            style={[styles.input, styles.bpInput]}
             placeholder="Diastolic"
+            placeholderTextColor={colors.textFaint}
+            keyboardType="numeric"
             value={formData.bloodPressureDia}
-            onChange={(e) => updateField({ bloodPressureDia: e.target.value })}
-            className="text-input"
+            onChangeText={(value) => updateField({ bloodPressureDia: value })}
           />
-        </div>
-        <p className="field-note">Don't have this on hand? Skip it — we'll flag it for your next visit.</p>
-      </div>
+        </View>
+        <Text style={styles.note}>Don't have this on hand? Skip it - we'll flag it for your next visit.</Text>
+      </View>
 
-      <button
-        type="button"
-        className="btn btn-primary btn-block"
-        disabled={!isWeeksValid(formData.weeksPregnant)}
-        onClick={onNext}
-      >
-        Continue to Symptoms
-      </button>
-    </div>
+      <Pressable onPress={onNext} disabled={!isWeeksValid(formData.weeksPregnant)} style={({ pressed }) => [styles.primaryButton, !isWeeksValid(formData.weeksPregnant) && styles.disabled, pressed && styles.pressed]}>
+        <Text style={styles.primaryButtonText}>Continue to Symptoms</Text>
+      </Pressable>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  title: { fontSize: 24, fontWeight: '800', color: colors.text, marginBottom: 6 },
+  hint: { color: colors.textSoft, marginBottom: 22, lineHeight: 20 },
+  field: { marginBottom: 20 },
+  label: { color: colors.text, fontWeight: '800', marginBottom: 10, fontSize: 14 },
+  optional: { color: colors.textFaint, fontWeight: '500' },
+  stepper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 18,
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: 14,
+    ...shadow,
+  },
+  stepperButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  stepperValue: { alignItems: 'center', minWidth: 90 },
+  stepperNumber: { fontSize: 34, fontWeight: '900', color: colors.text },
+  stepperUnit: { marginTop: -2, color: colors.textSoft, textTransform: 'uppercase', letterSpacing: 1, fontSize: 11, fontWeight: '800' },
+  pillRow: { flexDirection: 'row', gap: 10 },
+  pill: { flex: 1, minHeight: 46, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
+  pillActive: { backgroundColor: colors.brand, borderColor: colors.brand },
+  pillText: { color: colors.text, fontWeight: '800' },
+  pillTextActive: { color: '#fff' },
+  input: { width: '100%', minHeight: 48, borderRadius: radius.sm, borderWidth: 1.5, borderColor: colors.border, backgroundColor: colors.surfaceAlt, paddingHorizontal: 14, color: colors.text },
+  bpRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  bpInput: { flex: 1 },
+  bpSeparator: { color: colors.textFaint, fontWeight: '900', fontSize: 18 },
+  note: { color: colors.textFaint, fontSize: 12, marginTop: 8, lineHeight: 18 },
+  primaryButton: { minHeight: 48, borderRadius: radius.md, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18 },
+  primaryButtonText: { color: '#fff', fontWeight: '800' },
+  disabled: { opacity: 0.45 },
+  pressed: { opacity: 0.9 },
+});
