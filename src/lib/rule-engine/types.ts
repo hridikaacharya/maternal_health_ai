@@ -1,6 +1,12 @@
 export type ClauseOperator = '=' | '==' | '>=' | '<=' | '>' | '<';
-export type RuleOperator = 'AND' | 'OR' | null;
-export type RuleOutcome = 'STOP' | 'CONTINUE' | 'ASK_FOR_DATA' | string;
+
+export type RuleOperator = 'AND' | 'OR';
+
+export type RuleOutcome =
+  | 'STOP'
+  | 'CONTINUE'
+  | 'ASK_FOR_DATA'
+  | string;
 
 export interface Clause {
   variable: string;
@@ -11,27 +17,36 @@ export interface Clause {
 export interface RuleSource {
   citations: string[];
   pages: string[];
+  notes?: string;
 }
 
 export interface Rule {
-  rule_id: number;
+  rule_id: number | string;
   priority: number;
   rule_name: string;
   operator: RuleOperator;
   clauses: Clause[];
+
   gestational_stage: string;
   risk_level: string;
   recommendation: string;
   facility_level: string;
+
   confidence: string;
   education_module: string;
-  explanation: string;
-  rule_outcome: RuleOutcome;
-  source: RuleSource;
+
+  explanation_key?: string;
+  rule_outcome?: RuleOutcome;
+  source?: RuleSource;
 }
 
 export interface ScreeningInput {
-  [key: string]: string | number | boolean | null | undefined;
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | null
+    | undefined;
 }
 
 export interface ScreeningResult {
@@ -44,8 +59,8 @@ export interface CanonicalRulesFile {
   _meta: {
     generated_by: string;
     generated_at: string;
-    haemoglobin_unit_assumption: string;
-    unmapped_variables_warning: string;
+    source_files: string[];
   };
+
   rules: Rule[];
 }

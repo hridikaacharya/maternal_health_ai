@@ -1,19 +1,16 @@
-import { extractSymptoms } from "./symptomExtractor";
+import {
+
+extractClinicalEntities
+
+} from "@/lib/assistant/entityExtractor";
 
 
 export function chatToScreeningInput(
-  message:string
-) {
 
-  const symptoms = extractSymptoms(message);
+message:string
 
+){
 
-  return {
-
-    danger_signs: {
-      ...symptoms
-    }
-
-  };
+return extractClinicalEntities(message);
 
 }

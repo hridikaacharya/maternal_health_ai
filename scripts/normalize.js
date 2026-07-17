@@ -1,175 +1,186 @@
-// normalize.js
-// Converts the raw decision_rules + referral_rules into ONE canonical rule
-// set with consistent variable names and units. Run: node scripts/normalize.js
-//
-// WHY THIS EXISTS: decision_rules.csv and referral_rules.csv were authored
-// somewhat independently and use different variable names for the same
-// clinical fact (see README "Known clinical conflicts"). This file is the
-// single place where that reconciliation happens, so the rule engine never
-// has to guess.
-
 const fs = require('fs');
 const path = require('path');
+const csv = require('csv-parser');
 
-// ---------------------------------------------------------------------
-// CANONICAL VARIABLE MAP
-// key = canonical name used everywhere downstream
-// value = list of raw aliases that mean the same thing
-// ---------------------------------------------------------------------
-const VARIABLE_ALIASES = {
-  unconscious: ['unconscious', 'unconsciousness'],
-  convulsions: ['convulsions', 'convulsing'],
-  vaginal_bleeding: ['vaginal_bleeding'],
-  severe_abdominal_pain: ['severe_abdominal_pain'],
-  severe_difficulty_breathing: ['severe_difficulty_breathing', 'difficulty_breathing', 'shortness_of_breath'],
-  central_cyanosis: ['central_cyanosis'],
-  fever: ['fever'],
-  foul_smelling_discharge: ['foul_smelling_discharge', 'foul_smelling_vaginal_discharge'],
-  shock: ['shock'],
-  fainting: ['fainting'],
-  unrecordable_bp_pulse: ['unrecordable_bp_pulse'],
-  bp_systolic: ['bp_systolic', 'systolic_bp'],
-  bp_diastolic: ['bp_diastolic', 'diastolic_bp'],
-  proteinuria: ['proteinuria', 'protein_in_urine'], // NOTE: unit conflict, see below
-  severe_headache: ['severe_headache'],
-  blurred_vision: ['blurred_vision'],
-  gestational_age_weeks: ['gestational_age_weeks', 'gestational_age'],
-  haemoglobin: ['haemoglobin', 'haemoglobin_level'], // NOTE: unit conflict, see below
-  reduced_fetal_movements: ['reduced_fetal_movements', 'reduced_fetal_movement', 'fetal_movements'],
-  water_broke: ['water_broke', 'leaking_fluid', 'leaking_of_fluid_from_vagina'],
-  suicidal_ideation: ['suicidal_ideation'],
-  phq_9_score: ['phq_9_score'],
-  previous_preeclampsia: ['previous_preeclampsia'],
-  diabetes: ['diabetes', 'pre_existing_diabetes', 'gestational_diabetes'],
-  chronic_hypertension: ['chronic_hypertension'],
-  multiple_pregnancy: ['multiple_pregnancy'],
-  bmi: ['bmi', 'high_bmi', 'low_bmi'],
-  previous_gdm: ['previous_gdm'],
-  family_history_diabetes: ['family_history_diabetes'],
-  maternal_age: ['maternal_age', 'maternal_age_young', 'maternal_age_old'],
-  anc_visits_completed: ['anc_visits_completed', 'no_anc_visits'],
-  valid_ttcv_history: ['valid_ttcv_history'],
-  weight: ['weight'],
-  looks_very_ill: ['looks_very_ill'],
-  severe_vomiting: ['severe_vomiting'],
-  imminent_delivery: ['imminent_delivery'],
-  labour: ['labour'],
-  postpartum_haemorrhage: ['postpartum_haemorrhage'],
-  maternal_infection: ['maternal_infection'],
-  newborn_convulsions: ['newborn_convulsions'],
-  newborn_not_feeding: ['newborn_not_feeding'],
-};
+const RAW_DIR = path.join(__dirname, '..', 'src', 'data', 'raw');
+const OUTPUT_DIR = path.join(__dirname, '..', 'src', 'data', 'canonical');
 
-// Reverse lookup: raw name -> canonical name
-const RAW_TO_CANONICAL = {};
-for (const [canonical, aliases] of Object.entries(VARIABLE_ALIASES)) {
-  for (const alias of aliases) {
-    RAW_TO_CANONICAL[alias] = canonical;
-  }
+const decisionRules = [];
+const referralRules = [];
+
+function parseValue(value) {
+  if (!value) return '';
+
+  value = value.trim();
+
+  if (value === 'yes' || value === 'no') return value;
+
+  if (value === 'TRUE') return 'yes';
+  if (value === 'FALSE') return 'no';
+
+  if (!Number.isNaN(Number(value))) return Number(value);
+
+  return value;
 }
 
-function canonicalize(varName) {
-  return RAW_TO_CANONICAL[varName] || varName; // fall through if unmapped (flagged in report)
-}
+function parseCondition(condition) {
+  if (!condition) return [];
 
-// ---------------------------------------------------------------------
-// UNIT / VALUE RESOLUTION NOTES (flagged for clinical review — see README)
-// ---------------------------------------------------------------------
-// proteinuria: decision_rules uses numeric scale (>=2), referral_rules uses
-// dipstick string ("++"). We treat "++" as equivalent to numeric 2, and
-// "+++" as 3. This assumes a standard 0/1+/2+/3+/4+ dipstick scale.
-function normalizeProteinuriaValue(raw) {
-  if (raw === '++') return 2;
-  if (raw === '+++') return 3;
-  if (raw === '+') return 1;
-  return raw;
-}
+  const operator =
+    condition.includes(' OR ') ? 'OR' :
+    condition.includes(' AND ') ? 'AND' :
+    null;
 
-// haemoglobin: decision_rules rule 9 uses g/dL (<7 = severe). Rule 10's
-// upper bound of 110 looks like g/L, not g/dL. We normalize everything to
-// g/dL and treat the moderate band as 7-11 g/dL (WHO standard anaemia
-// cutoff), NOT 7-110. FLAG FOR CLINICAL CONFIRMATION.
-const HAEMOGLOBIN_UNIT_ASSUMPTION = 'g/dL, moderate band corrected to 7-11 (was 7-110 in source)';
+  const parts = condition.split(/\s+(?:OR|AND)\s+/);
 
-// ---------------------------------------------------------------------
-// LOAD RAW DATA
-// Paste your knowledge_base.json content into data/raw/knowledge_base.json
-// (the structured JSON version you sent, not the CSVs) before running this.
-// ---------------------------------------------------------------------
-const rawPath = path.join(__dirname, '..', 'data', 'raw', 'knowledge_base.json');
-if (!fs.existsSync(rawPath)) {
-  console.error(`Missing ${rawPath}`);
-  console.error('Save your knowledge_base.json into data/raw/ first, then re-run.');
-  process.exit(1);
-}
-const raw = JSON.parse(fs.readFileSync(rawPath, 'utf8'));
+  return parts.map((part) => {
+    const match = part.match(
+      /^(.+?)\s*(>=|<=|==|=|>|<)\s*(.+)$/
+    );
 
-// ---------------------------------------------------------------------
-// BUILD CANONICAL DECISION RULES
-// ---------------------------------------------------------------------
-const canonicalRules = raw.rule_engine.decision_rules.map((rule) => {
-  const clauses = (rule.condition.clauses || []).map((clause) => {
-    let value = clause.value;
-    if (canonicalize(clause.variable) === 'proteinuria') {
-      value = normalizeProteinuriaValue(value);
+    if (!match) {
+      return {
+        variable: part.trim(),
+        operator: '=',
+        value: 'yes'
+      };
     }
-    // Correct the known haemoglobin upper-bound unit bug from rule 10
-    if (canonicalize(clause.variable) === 'haemoglobin' && clause.operator === '<' && value === '110') {
-      value = '11'; // corrected per HAEMOGLOBIN_UNIT_ASSUMPTION
-    }
+
     return {
-      variable: canonicalize(clause.variable),
-      operator: clause.operator,
-      value: value,
+      variable: match[1].trim(),
+      operator: match[2],
+      value: parseValue(match[3])
     };
   });
-
-  return {
-    rule_id: rule.rule_id,
-    priority: rule.priority,
-    rule_name: rule.rule_name,
-    operator: rule.condition.operator, // AND / OR / null (single clause)
-    clauses,
-    gestational_stage: rule.gestational_stage,
-    risk_level: rule.risk_level,
-    recommendation: rule.recommendation,
-    facility_level: rule.facility_level,
-    confidence: rule.confidence,
-    education_module: rule.education_module,
-    explanation: rule.explanation_key,
-    rule_outcome: rule.rule_outcome, // STOP | CONTINUE | ASK_FOR_DATA
-    source: rule.source,
-  };
-});
-
-// Sort by priority ascending (1 = highest priority, evaluated first)
-canonicalRules.sort((a, b) => a.priority - b.priority);
-
-const output = {
-  _meta: {
-    generated_by: 'scripts/normalize.js',
-    generated_at: new Date().toISOString(),
-    haemoglobin_unit_assumption: HAEMOGLOBIN_UNIT_ASSUMPTION,
-    unmapped_variables_warning:
-      'Any variable not in VARIABLE_ALIASES passes through unchanged — check console output below for gaps.',
-  },
-  rules: canonicalRules,
-};
-
-// Warn about any variable used in rules but not explicitly mapped
-const allUsedVars = new Set();
-raw.rule_engine.decision_rules.forEach((r) =>
-  (r.condition.clauses || []).forEach((c) => allUsedVars.add(c.variable))
-);
-const unmapped = [...allUsedVars].filter((v) => !RAW_TO_CANONICAL[v]);
-if (unmapped.length) {
-  console.warn('⚠ Unmapped variables (passed through as-is, review these):', unmapped);
 }
 
-fs.mkdirSync(path.join(__dirname, '..', 'data', 'canonical'), { recursive: true });
-fs.writeFileSync(
-  path.join(__dirname, '..', 'data', 'canonical', 'rules.json'),
-  JSON.stringify(output, null, 2)
-);
+function loadCSV(file, callback) {
+  return new Promise((resolve, reject) => {
+    const rows = [];
 
-console.log(`✓ Wrote ${canonicalRules.length} canonical rules to data/canonical/rules.json`);
+    fs.createReadStream(
+      path.join(RAW_DIR, file)
+    )
+      .pipe(csv())
+      .on('data', row => rows.push(row))
+      .on('end', () => resolve(callback(rows)))
+      .on('error', reject);
+  });
+}
+
+
+async function main() {
+
+  await loadCSV(
+    'decision_rules.csv',
+    rows => {
+      rows.forEach(row => {
+        decisionRules.push({
+          rule_id: Number(row.rule_id),
+          priority: Number(row.priority),
+          rule_name: row.rule_name,
+          operator: row.logical_operator || null,
+          clauses: parseCondition(row.conditions),
+          gestational_stage: row.gestational_stage,
+          risk_level: row.risk_level,
+          recommendation: row.recommendation,
+          facility_level: row.facility_level,
+          confidence: row.confidence,
+          education_module: row.education_module,
+          explanation: row.explanation_key,
+          rule_outcome: row.rule_outcome,
+          source: {
+            citations: [row.source],
+            pages: row.page ? [row.page] : []
+          }
+        });
+      });
+    }
+  );
+
+
+  await loadCSV(
+    'referral_rules.csv',
+    rows => {
+      rows.forEach(row => {
+
+        referralRules.push({
+          rule_id: `referral_${row.rule_id}`,
+          priority: 1,
+          rule_name: `Referral: ${row.if_variable}`,
+          operator: null,
+          clauses: [
+            {
+              variable: row.if_variable,
+              operator: row.operator,
+              value: row.value === 'TRUE' ? 'yes' : row.value
+            }
+          ],
+          gestational_stage: 'Any',
+          risk_level: row.urgency,
+          recommendation: row.recommendation,
+          facility_level: row.facility,
+          confidence: 'High',
+          education_module: 'Danger Signs',
+          explanation:
+  row.notes?.trim() ||
+  row.clinical_notes?.trim() ||
+  row.comments?.trim() ||
+  'Referral rule from medic-reviewed referral criteria.',
+          rule_outcome: 'STOP',
+          source: {
+  citations: [row.source],
+  pages: [row.page],
+  notes:
+    row.notes ||
+    row.clinical_notes ||
+    row.comments ||
+    ''
+}
+        });
+
+      });
+    }
+  );
+
+
+  const output = {
+    _meta: {
+      generated_by: 'scripts/normalize.js (CSV)',
+      generated_at: new Date().toISOString(),
+      source_files: [
+        'decision_rules.csv',
+        'referral_rules.csv'
+      ]
+    },
+    rules: [
+      ...decisionRules,
+      ...referralRules
+    ].sort(
+      (a,b) => a.priority - b.priority
+    )
+  };
+
+
+  fs.mkdirSync(
+    OUTPUT_DIR,
+    {recursive:true}
+  );
+
+
+  fs.writeFileSync(
+    path.join(
+      OUTPUT_DIR,
+      'rules.json'
+    ),
+    JSON.stringify(output,null,2)
+  );
+
+
+  console.log(
+    `✓ Generated ${output.rules.length} rules`
+  );
+}
+
+
+main();

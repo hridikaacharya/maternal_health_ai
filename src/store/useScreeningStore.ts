@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-
+import { generateLocalEducation } from "@/lib/ai/localEducation";
 import { runScreening } from '@/lib/rule-engine/ruleEngine';
 import type { ScreeningInput, ScreeningResult } from '@/lib/rule-engine/types';
 import { saveScreeningRecord } from '@/lib/storage/db';
@@ -9,6 +9,7 @@ type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 interface ScreeningStoreState {
   draft: ScreeningInput;
   result: ScreeningResult | null;
+  education: string | null;
   saveStatus: SaveStatus;
   saveError: string | null;
   setField: (field: string, value: string | number | boolean | null | undefined) => void;
@@ -33,6 +34,7 @@ function setDraftField(draft: ScreeningInput, field: string, value: string | num
 export const useScreeningStore = create<ScreeningStoreState>((set, get) => ({
   draft: initialDraft,
   result: null,
+  education: null,
   saveStatus: 'idle',
   saveError: null,
   setField: (field, value) => {
@@ -41,11 +43,29 @@ export const useScreeningStore = create<ScreeningStoreState>((set, get) => ({
     }));
   },
   resetDraft: () => {
-    set({ draft: initialDraft, result: null, saveStatus: 'idle', saveError: null });
-  },
+    set({
+      draft: initialDraft,
+      result: null,
+      education: null,
+      saveStatus: 'idle',
+      saveError: null
+    });
+},
   submitScreening: async (language) => {
     const result = runScreening(get().draft);
-    set({ result, saveStatus: 'saving', saveError: null });
+    let education = null;
+
+  if (result.primary) {
+  education = generateLocalEducation(
+    result.primary
+  );
+  }
+    set({
+  result,
+  education,
+  saveStatus: "saving",
+  saveError: null
+  });
 
     try {
       await saveScreeningRecord({

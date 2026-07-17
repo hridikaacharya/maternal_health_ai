@@ -14,7 +14,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "csv-parser": "^3.2.1",
     "dexie": "^4.0.11",
+    "firebase": "^12.16.0",
     "i18next": "^24.2.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

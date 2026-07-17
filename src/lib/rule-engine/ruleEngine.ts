@@ -1,64 +1,118 @@
-import rulesData from '../../data/canonical/rules.json';
+import rulesData from '../../data/canonical/rules.json' with { type: 'json' };
 
-import type { Clause, CanonicalRulesFile, Rule, ScreeningInput, ScreeningResult } from './types';
+import type {
+  CanonicalRulesFile,
+  Rule,
+  ScreeningInput,
+  ScreeningResult
+} from './types';
 
-export function loadRules(): Rule[] {
-  return (rulesData as CanonicalRulesFile).rules;
+const rules = (rulesData as CanonicalRulesFile).rules;
+
+function normalizeValue(value: unknown) {
+  if (typeof value === 'string') {
+    return value.toLowerCase();
+  }
+
+  return value;
 }
 
-export function evaluateClause(clause: Clause, input: ScreeningInput): boolean {
-  const inputValue = input[clause.variable];
+function compareValues(actual: unknown, expected: unknown) {
+  const actualNum = Number(
+    String(actual).replace('+', '')
+  );
 
-  if (inputValue === undefined || inputValue === null) {
-    if (clause.value === 'unknown') return true;
+  const expectedNum = Number(
+    String(expected).replace('+', '')
+  );
+
+  if (!Number.isNaN(actualNum) && !Number.isNaN(expectedNum)) {
+    return actualNum - expectedNum;
+  }
+
+  return String(actual).localeCompare(String(expected));
+}
+
+function evaluateClause(
+  input: ScreeningInput,
+  variable: string,
+  operator: string,
+  expected: string | number
+) {
+  const actual = input[variable];
+
+  if (actual === undefined || actual === null) {
     return false;
   }
 
-  const a = inputValue;
-  const b = Number.isNaN(Number(clause.value)) ? clause.value : Number(clause.value);
-  const aNum = Number.isNaN(Number(a)) ? null : Number(a);
-  const bNum = typeof b === 'number' ? b : Number(b);
+  const normalizedActual = normalizeValue(actual);
+  const normalizedExpected = normalizeValue(expected);
 
-  switch (clause.operator) {
+ switch (operator) {
     case '=':
     case '==':
-      return String(a).toLowerCase() === String(b).toLowerCase();
-    case '>=':
-      return aNum !== null && aNum >= bNum;
-    case '<=':
-      return aNum !== null && aNum <= bNum;
+      return normalizedActual === normalizedExpected;
+
     case '>':
-      return aNum !== null && aNum > bNum;
+      return compareValues(actual, expected) > 0;
+
     case '<':
-      return aNum !== null && aNum < bNum;
+      return compareValues(actual, expected) < 0;
+
+    case '>=':
+      return compareValues(actual, expected) >= 0;
+
+    case '<=':
+      return compareValues(actual, expected) <= 0;
+
     default:
       return false;
   }
-}
+  }   //
 
-export function evaluateRule(rule: Rule, input: ScreeningInput): boolean {
-  const results = rule.clauses.map((clause) => evaluateClause(clause, input));
-  if (rule.operator === 'OR') return results.some(Boolean);
-  if (rule.operator === 'AND') return results.every(Boolean);
+function evaluateRule(
+  rule: Rule,
+  input: ScreeningInput
+) {
+  const results = rule.clauses.map(clause =>
+    evaluateClause(
+      input,
+      clause.variable,
+      clause.operator,
+      clause.value
+    )
+  );
+
+  if (rule.operator === 'OR') {
+    return results.some(Boolean);
+  }
+
+  if (rule.operator === 'AND') {
+    return results.every(Boolean);
+  }
+
   return results[0] ?? false;
 }
 
-export function runScreening(input: ScreeningInput): ScreeningResult {
-  const rules = loadRules();
-  const matched: Rule[] = [];
+export function runScreening(
+  input: ScreeningInput
+): ScreeningResult {
 
-  for (const rule of rules) {
-    if (evaluateRule(rule, input)) {
-      matched.push(rule);
-      if (rule.rule_outcome === 'STOP') {
-        break;
-      }
-    }
-  }
+  const matched = rules.filter(rule =>
+    evaluateRule(rule, input)
+  );
+
+
+  const primary =
+    matched.sort(
+      (a,b) =>
+        a.priority - b.priority
+    )[0] ?? null;
+
 
   return {
     matched,
-    primary: matched[0] || null,
+    primary,
     inputEvaluated: input
   };
 }
