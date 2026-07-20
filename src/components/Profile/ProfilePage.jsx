@@ -145,88 +145,260 @@ export default function ProfilePage({ user, onLogout }) {
 }
 
 const styles = StyleSheet.create({
-  page: { paddingHorizontal: 16, paddingBottom: 24, gap: 16 },
-  card: { backgroundColor: colors.surface, borderRadius: 20, borderWidth: 1, borderColor: colors.border, padding: 18, gap: 16, ...shadow },
-  profileRow: { flexDirection: 'row', alignItems: 'center', gap: 16, borderBottomWidth: 1, borderBottomColor: colors.border, paddingBottom: 18 },
-  avatar: { width: 64, height: 64, borderRadius: 32, alignItems: 'center', justifyContent: 'center' },
-  avatarFchv: { backgroundColor: colors.brand },
-  avatarPatient: { backgroundColor: colors.accent },
-  nameRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 },
-  name: { fontSize: 22, fontWeight: '900', color: colors.text },
-  title: { color: colors.textFaint, marginTop: 4 },
-  rolePill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, borderWidth: 1 },
-  roleFchv: { backgroundColor: '#EFF6FF', borderColor: '#BFDBFE' },
-  rolePatient: { backgroundColor: '#F0FDF4', borderColor: '#BBF7D0' },
-  roleText: { fontSize: 11, fontWeight: '900' },
-  roleTextFchv: { color: '#1D4ED8' },
-  roleTextPatient: { color: '#15803D' },
-  logoutButton: { width: 38, height: 38, borderRadius: 19, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceAlt },
-  metaGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  metaCard: { flex: 1, minWidth: '48%', padding: 12, backgroundColor: colors.surface, borderRadius: 12, borderWidth: 1, borderColor: colors.border },
-  metaLabel: { color: colors.textFaint, fontSize: 11, fontWeight: '900', marginBottom: 4 },
-  metaValue: { color: colors.text, fontWeight: '700', lineHeight: 19 },
-  statsRow: { flexDirection: 'row', gap: 12, flexWrap: 'wrap' },
-  statCard: { flex: 1, minWidth: '30%', padding: 16, backgroundColor: '#F8FAFC', borderRadius: 12, borderWidth: 1, borderColor: '#E2E8F0', alignItems: 'center' },
-  statNumber: { fontSize: 24, fontWeight: '900', color: '#1E293B' },
-  statLabel: { color: '#64748B', fontSize: 11, fontWeight: '800', textAlign: 'center' },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 2, borderBottomColor: colors.border, paddingBottom: 10 },
-  sectionTitle: { fontSize: 18, fontWeight: '900', color: colors.text, flexDirection: 'row', alignItems: 'center', gap: 8 },
-  clearButton: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  clearButtonText: { color: colors.danger, fontSize: 12, fontWeight: '800' },
-  noticeCard: { backgroundColor: colors.brandSoft, borderRadius: 12, padding: 16 },
-  noticeTitle: { marginBottom: 8, color: '#1E3A8A', fontWeight: '900' },
-  noticeText: { color: '#334155', lineHeight: 21 },
-  bold: { fontWeight: '900' },
-  emptyCard: { padding: 28, alignItems: 'center', gap: 8, backgroundColor: '#F8FAFC', borderRadius: 12, borderWidth: 1, borderColor: '#CBD5E1', borderStyle: 'dashed' },
-  emptyTitle: { color: colors.text, fontWeight: '800' },
-  emptyText: { color: colors.textSoft, textAlign: 'center' },
-  historyCard: { padding: 16, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 12, ...shadow },
-  historyTop: { flexDirection: 'row', justifyContent: 'space-between', gap: 12, marginBottom: 8 },
-  historyDate: { color: colors.textFaint, fontSize: 12, fontWeight: '800' },
-  historyTitle: { color: colors.text, fontSize: 16, fontWeight: '900', marginTop: 2 },
-  riskPill: { borderRadius: 8, paddingHorizontal: 8, paddingVertical: 4, alignSelf: 'flex-start' },
-  riskText: { fontSize: 11, fontWeight: '900' },
-  historyLabel: { color: colors.textFaint, fontSize: 11, fontWeight: '900', textTransform: 'uppercase', letterSpacing: 0.7, marginTop: 10, marginBottom: 4 },
-  historyText: { color: colors.text, lineHeight: 20 },
-  pressed: { opacity: 0.9 },
+  page: {
+    padding: 16,
+    gap: 16,
+    backgroundColor: colors.bg,
+  },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 16,
+    gap: 16,
+    ...shadow,
+  },
+  profileRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarFchv: {
+    backgroundColor: colors.brand,
+  },
+  avatarPatient: {
+    backgroundColor: colors.accent,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  name: {
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: '900',
+    color: colors.text,
+  },
+  title: {
+    marginTop: 4,
+    color: colors.textSoft,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  rolePill: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+  },
+  roleFchv: {
+    backgroundColor: colors.brandSoft,
+  },
+  rolePatient: {
+    backgroundColor: colors.accentSoft,
+  },
+  roleText: {
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 0.8,
+  },
+  roleTextFchv: {
+    color: colors.brandDark,
+  },
+  roleTextPatient: {
+    color: colors.accentDark,
+  },
+  logoutButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surfaceAlt,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  pressed: {
+    opacity: 0.85,
+  },
+  metaGrid: {
+    flexDirection: 'row',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  metaCard: {
+    flex: 1,
+    minWidth: 150,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+    backgroundColor: colors.surfaceAlt,
+    padding: 14,
+    gap: 6,
+  },
+  metaLabel: {
+    color: colors.textFaint,
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  metaValue: {
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  statCard: {
+    flex: 1,
+    minWidth: 100,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+    backgroundColor: colors.surfaceAlt,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    gap: 4,
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: colors.text,
+  },
+  statLabel: {
+    color: colors.textSoft,
+    textAlign: 'center',
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: colors.text,
+  },
+  clearButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.dangerBorder,
+    backgroundColor: colors.dangerSoft,
+  },
+  clearButtonText: {
+    color: colors.danger,
+    fontSize: 12,
+    fontWeight: '800',
+  },
+  noticeCard: {
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.brandSoft,
+    backgroundColor: '#f4faf7',
+    padding: 16,
+    gap: 8,
+  },
+  noticeTitle: {
+    color: colors.brandDark,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  noticeText: {
+    color: colors.textSoft,
+    lineHeight: 22,
+  },
+  bold: {
+    fontWeight: '900',
+    color: colors.text,
+  },
+  emptyCard: {
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.borderSoft,
+    backgroundColor: colors.surface,
+    padding: 24,
+    alignItems: 'center',
+    gap: 8,
+  },
+  emptyTitle: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: colors.text,
+    textAlign: 'center',
+  },
+  emptyText: {
+    color: colors.textSoft,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  historyCard: {
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    padding: 16,
+    gap: 8,
+    ...shadow,
+  },
+  historyTop: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  historyDate: {
+    color: colors.textFaint,
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  historyTitle: {
+    color: colors.text,
+    fontSize: 16,
+    fontWeight: '900',
+  },
+  riskPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+  },
+  riskText: {
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 0.6,
+  },
+  historyLabel: {
+    color: colors.textFaint,
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+    marginTop: 4,
+  },
+  historyText: {
+    color: colors.text,
+    lineHeight: 20,
+  },
 });
-<>
-                    <div
-                      style={{
-                        fontSize: "13px",
-                        color: "var(--color-ink-soft)",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      <strong>Symptoms reported:</strong>{" "}
-                      {record.symptoms && record.symptoms.length > 0
-                        ? record.symptoms.join(", ")
-                        : "None"}
-                    </div>
 
-                    <div
-                      style={{
-                        backgroundColor: "#F8FAFC",
-                        padding: "10px 12px",
-                        borderRadius: "6px",
-                        fontSize: "12px",
-                        borderLeft: `3px solid ${record.color}`,
-                      }}
-                    >
-                      <strong>Required Action:</strong> {record.action}
-                    </div>
-              </>
 
-      {/* Logout Action */}
-      <button
-        type="button"
-        className="btn btn-ghost btn-block"
-        style={{
-          border: "1px solid #EF4444",
-          color: "#EF4444",
-          marginTop: "32px",
-        }}
-        onClick={onLogout}
-      >
-        <LogOut size={14} /> Sign Out of Companion
-      </button>
