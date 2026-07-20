@@ -3,22 +3,30 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { colors, radius, shadow } from '../../theme/nativeTheme';
 
-function HeroIllustration() {
+
+function HeroSteps() {
+  const steps = [
+    { icon: 'clipboard', title: 'Answer a few questions', body: 'Gestational age, symptoms, care history' },
+    { icon: 'git-branch', title: 'A fixed rule engine decides', body: 'Low risk, urgent, or emergency' },
+    { icon: 'globe', title: 'Get a clear explanation', body: 'In plain English and Nepali' },
+  ];
+
   return (
-    <View style={styles.heroArt} accessibilityRole="image" accessibilityLabel="Illustration of a winding path climbing terraced hills from a village to a health post">
-      <View style={styles.heroSun} />
-      <View style={[styles.heroHill, styles.heroHillBack]} />
-      <View style={[styles.heroHill, styles.heroHillMid]} />
-      <View style={[styles.heroHill, styles.heroHillFront]} />
-      <View style={styles.heroPath} />
-      <View style={[styles.heroStop, { left: '20%', top: '52%' }]} />
-      <Text style={[styles.heroStopLabel, { left: '14%', top: '65%' }]}>1st tri</Text>
-      <View style={[styles.heroStop, { left: '50%', top: '34%' }]} />
-      <Text style={[styles.heroStopLabel, { left: '44%', top: '47%' }]}>2nd tri</Text>
-      <View style={[styles.heroStop, { left: '75%', top: '44%' }]} />
-      <Text style={[styles.heroStopLabel, { left: '69%', top: '57%' }]}>3rd tri</Text>
-      <View style={styles.heroClinic} />
-      <View style={styles.heroHut} />
+    <View style={styles.heroSteps}>
+      {steps.map((step, i) => (
+        <View key={step.title} style={styles.heroStepRow}>
+          <View style={styles.heroStepMarkerColumn}>
+            <View style={styles.heroStepIcon}>
+              <Feather name={step.icon} size={18} color={colors.text} />
+            </View>
+            {i < steps.length - 1 && <View style={styles.heroStepLine} />}
+          </View>
+          <View style={styles.heroStepText}>
+            <Text style={styles.heroStepTitle}>{step.title}</Text>
+            <Text style={styles.heroStepBody}>{step.body}</Text>
+          </View>
+        </View>
+      ))}
     </View>
   );
 }
@@ -45,7 +53,7 @@ export default function HomePage({ onNavigate }) {
             </Pressable>
           </View>
         </View>
-        <HeroIllustration />
+        <HeroSteps />
       </View>
 
       <View style={styles.statsStrip}>
@@ -117,30 +125,46 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     gap: 18,
   },
-  heroCard: {
+  heroSteps: {
+    paddingTop: 4,
+  },
+  heroStepRow: {
+    flexDirection: 'row',
+    gap: 14,
+  },
+  heroStepMarkerColumn: {
+    alignItems: 'center',
+  },
+  heroStepIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 24,
-    padding: 20,
-    gap: 18,
-    ...shadow,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  heroTextColumn: {
-    gap: 12,
+  heroStepLine: {
+    width: 1,
+    flex: 1,
+    minHeight: 28,
+    backgroundColor: colors.border,
   },
-  eyebrow: {
-    color: colors.accentDark,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    fontWeight: '700',
-    fontSize: 11,
+  heroStepText: {
+    paddingTop: 6,
+    paddingBottom: 24,
+    flex: 1,
   },
-  heroTitle: {
-    color: colors.text,
-    fontSize: 34,
-    lineHeight: 38,
+  heroStepTitle: {
+    fontSize: 15,
     fontWeight: '800',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  heroStepBody: {
+    fontSize: 13,
+    color: colors.textSoft,
   },
   lead: {
     color: colors.textSoft,
@@ -185,94 +209,6 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     opacity: 0.9,
-  },
-  heroArt: {
-    height: 260,
-    borderRadius: 22,
-    backgroundColor: '#f5efe1',
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  heroSun: {
-    position: 'absolute',
-    right: 24,
-    top: 20,
-    width: 52,
-    height: 52,
-    borderRadius: 99,
-    backgroundColor: 'rgba(224, 135, 44, 0.82)',
-  },
-  heroHill: {
-    position: 'absolute',
-    left: -10,
-    right: -10,
-    borderRadius: 18,
-  },
-  heroHillBack: {
-    bottom: 98,
-    height: 96,
-    backgroundColor: '#d8ddd1',
-    transform: [{ skewX: '-18deg' }],
-  },
-  heroHillMid: {
-    bottom: 44,
-    height: 108,
-    backgroundColor: colors.brandSoft,
-    transform: [{ skewX: '-18deg' }],
-  },
-  heroHillFront: {
-    bottom: -8,
-    height: 102,
-    backgroundColor: colors.brand,
-    transform: [{ skewX: '-18deg' }],
-    opacity: 0.92,
-  },
-  heroPath: {
-    position: 'absolute',
-    left: 18,
-    bottom: 48,
-    width: '72%',
-    height: 2,
-    backgroundColor: colors.text,
-    transform: [{ rotate: '-18deg' }],
-    opacity: 0.55,
-  },
-  heroStop: {
-    position: 'absolute',
-    width: 10,
-    height: 10,
-    borderRadius: 99,
-    backgroundColor: colors.surface,
-    borderWidth: 2,
-    borderColor: colors.brand,
-  },
-  heroStopLabel: {
-    position: 'absolute',
-    color: colors.textSoft,
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  heroClinic: {
-    position: 'absolute',
-    right: 18,
-    top: 18,
-    width: 42,
-    height: 32,
-    borderRadius: 6,
-    borderWidth: 1.5,
-    borderColor: colors.text,
-    backgroundColor: colors.surface,
-  },
-  heroHut: {
-    position: 'absolute',
-    left: 22,
-    bottom: 24,
-    width: 34,
-    height: 24,
-    borderWidth: 1.5,
-    borderColor: colors.text,
-    backgroundColor: colors.surface,
-    borderRadius: 4,
   },
   statsStrip: {
     gap: 12,
