@@ -1,0 +1,106 @@
+{
+  "header": {
+    "home": "Home",
+    "patientAssessment": "Patient Assessment",
+    "dashboard": "FCHV Dashboard",
+    "aiExplainer": "AI Explainer",
+    "signIn": "Sign In"
+  },
+ "login": {
+  "title": "Access Maatri Care Companion",
+  "subtitle": "Sign in to access your dashboard, clinical triage forms, and the AI Explainer.",
+  "demoLabel": "Select a demo role to pre-fill credentials:",
+  "fchvAccount": "FCHV Account",
+  "patientAccount": "Patient Account",
+  "username": "Username",
+  "usernamePlaceholder": "e.g., sample_patient",
+  "password": "Password",
+  "signIn": "Sign In",
+  "usernameRequired": "Please enter your username.",
+  "passwordRequired": "Password is required. Please type your password to continue.",
+  "invalidCredentials": "Access Denied. Invalid username or password combination."
+},"home": {
+  "steps": {
+    "answer": {
+      "title": "Answer a few questions",
+      "body": "Gestational age, symptoms, care history"
+    },
+    "engine": {
+      "title": "A fixed rule engine decides",
+      "body": "Low risk, urgent, or emergency"
+    },
+    "explanation": {
+      "title": "Get a clear explanation",
+      "body": "In plain English and Nepali"
+    }
+  },
+  "eyebrow": "Decision support, not replacement",
+  "heroTitle": "Every hour of delay costs lives. Maatri Care helps close that gap.",
+  "heroLead": "A bilingual triage companion for pregnant women and Female Community Health Volunteers (FCHVs). A deterministic clinical engine decides the risk tier - never an AI model - and a translation layer explains it clearly, in English and Nepali, in seconds.",
+  "startAssessment": "Start an assessment",
+  "fchvDashboard": "View FCHV dashboard"
+},
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "optional": "optional",
+    "appName": "Maatri Care",
+    "back": "Back",
+    "continue": "Continue",
+    "generateAssessment": "Generate Assessment",
+    "evaluating": "Evaluating..."
+  },
+  "assessment": {
+    "profile": {
+      "title": "Let's start with the basics",
+      "hint": "This takes about a minute. You can go back and change anything.",
+      "weeksPregnant": "How many weeks pregnant?",
+      "weeks": "weeks",
+      "decreaseWeeks": "Decrease weeks",
+      "increaseWeeks": "Increase weeks",
+      "firstPregnancy": "Is this your first pregnancy?",
+      "age": "Age",
+      "bloodPressure": "Blood pressure",
+      "systolic": "Systolic",
+      "diastolic": "Diastolic",
+      "bpNote": "Don't have this on hand? Skip it - we'll flag it for your next visit.",
+      "continue": "Continue to Symptoms"
+    }, "symptoms": {
+      "title": "Any symptoms right now?",
+      "hint": "Select everything that applies. It's okay to select nothing.",
+      "vaginalBleeding": "Vaginal bleeding",
+      "severeHeadache": "Severe headache",
+      "blurredVision": "Blurred vision",
+      "convulsions": "Convulsions",
+      "severeAbdominalPain": "Severe abdominal pain",
+      "fever": "Fever"
+    },"history": {
+     "title": "Care history",
+     "hint": "Last few questions.",
+     "anc": {
+       "title": "Documented ANC visits so far",
+       "zeroVisits": "0 visits",
+       "oneToThreeVisits": "1-3 visits",
+       "fourPlusVisits": "4+ visits"
+     },
+     "conditions": {
+       "title": "Existing conditions",
+       "optional": "(select any that apply)",
+       "diabetes": "Diabetes",
+       "highBloodPressure": "High blood pressure",
+       "anemia": "Anemia",
+       "heartCondition": "Heart condition"
+     },
+     "iron": {
+       "title": "Taking iron/folic acid supplements?",
+       "yes": "Yes",
+       "no": "No",
+       "notSure": "Not sure"
+     },
+     "evaluating": "Evaluating...",
+     "generate": "Generate Assessment"
+   }
+  }
+}
+
+

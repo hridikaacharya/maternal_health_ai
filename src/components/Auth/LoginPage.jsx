@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { colors, radius, shadow } from '../../theme/nativeTheme';
-
+import { useTranslation } from "react-i18next";
 export default function LoginPage({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { t } = useTranslation();
 
   const mockAccounts = {
     sita_fchv: {
@@ -21,15 +22,15 @@ export default function LoginPage({ onLogin }) {
         casesManaged: 42,
       },
     },
-    gita_patient: {
+    sample_patient: {
       password: 'patient123',
       user: {
         id: 'usr_pat_01',
-        name: 'Gita Rai',
+        name: 'Sample Patient',
         role: 'patient',
         title: 'Expectant Mother (2nd Trimester)',
         district: 'Tokha, Bagmati Province',
-        phone: '+977 986-7654321',
+        phone: '+977 986-764321',
         ancVisitsLogged: 2,
       },
     },
@@ -41,7 +42,7 @@ export default function LoginPage({ onLogin }) {
       setUsername('sita_fchv');
       setPassword('fchv123');
     } else {
-      setUsername('gita_patient');
+      setUsername('sample_patient');
       setPassword('patient123');
     }
   };
@@ -51,12 +52,12 @@ export default function LoginPage({ onLogin }) {
     const cleanUsername = username.trim();
 
     if (!cleanUsername) {
-      setError('Please enter your username.');
+      setError(t("login.usernameRequired"));
       return;
     }
 
     if (!password) {
-      setError('Password is required. Please type your password to continue.');
+      setError(t("login.passwordRequired"));
       return;
     }
 
@@ -64,7 +65,7 @@ export default function LoginPage({ onLogin }) {
     if (matchedAccount && matchedAccount.password === password) {
       onLogin(matchedAccount.user);
     } else {
-      setError('Access Denied. Invalid username or password combination.');
+      setError(t("login.invalidCredentials"));
     }
   };
 
@@ -72,38 +73,44 @@ export default function LoginPage({ onLogin }) {
     <View style={styles.card}>
       <View style={styles.header}>
         <Feather name="lock" size={36} color={colors.brand} />
-        <Text style={styles.title}>Access Sathi Companion</Text>
-        <Text style={styles.lead}>Sign in to access your dashboard, clinical triage forms, and the AI Explainer.</Text>
+        <Text style={styles.title}>{t("login.title")}</Text>
+        <Text style={styles.lead}>{t("login.subtitle")}</Text>
       </View>
 
       <View style={styles.demoBox}>
-        <Text style={styles.demoLabel}>Select a demo role to pre-fill credentials:</Text>
+        <Text style={styles.demoLabel}>{t("login.selectDemoRole")}</Text>
         <View style={styles.demoRow}>
           <Pressable onPress={() => handleDemoFill('fchv')} style={({ pressed }) => [styles.demoButton, styles.primaryButton, pressed && styles.pressed]}>
             <Feather name="shield" size={14} color="#fff" />
-            <Text style={styles.primaryButtonText}>FCHV Account</Text>
+            <Text style={styles.primaryButtonText}>
+  {t("login.fchvAccount")}
+</Text>
           </Pressable>
           <Pressable onPress={() => handleDemoFill('patient')} style={({ pressed }) => [styles.demoButton, styles.secondaryButton, pressed && styles.pressed]}>
             <Feather name="user" size={14} color={colors.text} />
-            <Text style={styles.secondaryButtonText}>Patient Account</Text>
+            <Text style={styles.secondaryButtonText}>
+  {t("login.patientAccount")}
+</Text>
           </Pressable>
         </View>
       </View>
 
       <View style={styles.field}>
-        <Text style={styles.label}>Username</Text>
-        <TextInput style={styles.input} placeholder="e.g., gita_patient" placeholderTextColor={colors.textFaint} value={username} onChangeText={setUsername} autoCapitalize="none" />
+       <Text style={styles.label}>
+  {t("login.username")}
+</Text>
+        <TextInput style={styles.input} placeholder={t("login.usernamePlaceholder")} placeholderTextColor={colors.textFaint} value={username} onChangeText={setUsername} autoCapitalize="none" />
       </View>
 
       <View style={styles.field}>
-        <Text style={styles.label}>Password</Text>
-        <TextInput style={styles.input} placeholder="••••••••" placeholderTextColor={colors.textFaint} secureTextEntry value={password} onChangeText={setPassword} />
+        <Text style={styles.label}>{t("login.password")}</Text>
+        <TextInput style={styles.input} placeholder={t("login.passwordPlaceholder")} placeholderTextColor={colors.textFaint} secureTextEntry value={password} onChangeText={setPassword} />
       </View>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <Pressable onPress={handleCustomSubmit} style={({ pressed }) => [styles.primarySubmit, pressed && styles.pressed]}>
-        <Text style={styles.primaryButtonText}>Sign In</Text>
+        <Text style={styles.primaryButtonText}>{t("login.signIn")}</Text>
       </Pressable>
     </View>
   );

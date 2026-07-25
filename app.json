@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Sathi",
-    "slug": "sathi-mhdss",
-    "scheme": "sathi",
+    "name": "Maatri Care",
+    "slug": "Maatri Care-mhdss",
+    "scheme": "Maatri Care",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -14,7 +14,7 @@
       "bundler": "metro"
     },
     "android": {
-      "package": "com.anonymous.sathimhdss"
+      "package": "com.anonymous.Maatri Caremhdss"
     }
   }
 }

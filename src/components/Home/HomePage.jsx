@@ -1,14 +1,27 @@
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { colors, radius, shadow } from '../../theme/nativeTheme';
 
-
 function HeroSteps() {
+  const { t } = useTranslation();
   const steps = [
-    { icon: 'clipboard', title: 'Answer a few questions', body: 'Gestational age, symptoms, care history' },
-    { icon: 'git-branch', title: 'A fixed rule engine decides', body: 'Low risk, urgent, or emergency' },
-    { icon: 'globe', title: 'Get a clear explanation', body: 'In plain English and Nepali' },
+    {
+      icon: 'clipboard',
+      title: t("home.steps.answer.title"),
+      body: t("home.steps.answer.body"),
+    },
+    {
+      icon: 'git-branch',
+      title: t("home.steps.engine.title"),
+      body: t("home.steps.engine.body"),
+    },
+    {
+      icon: 'globe',
+      title: t("home.steps.explanation.title"),
+      body: t("home.steps.explanation.body"),
+    },
   ];
 
   return (
@@ -32,24 +45,31 @@ function HeroSteps() {
 }
 
 export default function HomePage({ onNavigate }) {
+  const { t } = useTranslation();
   return (
     <ScrollView contentContainerStyle={styles.page} showsVerticalScrollIndicator={false}>
       <View style={styles.heroCard}>
         <View style={styles.heroTextColumn}>
-          <Text style={styles.eyebrow}>Decision support, not replacement</Text>
-          <Text style={styles.heroTitle}>Every hour of delay costs lives. Sathi helps close that gap.</Text>
+          <Text style={styles.eyebrow}>
+            {t("home.eyebrow")}
+          </Text>
+          <Text style={styles.heroTitle}>
+            {t("home.heroTitle")}
+          </Text>
           <Text style={styles.lead}>
-            A bilingual triage companion for pregnant women and Female Community Health Volunteers (FCHVs). A
-            deterministic clinical engine decides the risk tier - never an AI model - and a translation layer explains
-            it clearly, in English and Nepali, in seconds.
+            {t("home.heroLead")}
           </Text>
           <View style={styles.ctaRow}>
             <Pressable onPress={() => onNavigate('patient')} style={({ pressed }) => [styles.primaryButton, pressed && styles.buttonPressed]}>
-              <Text style={styles.primaryButtonText}>Start an assessment</Text>
+              <Text style={styles.primaryButtonText}>
+                Start an assessment
+              </Text>
               <Feather name="arrow-right" size={16} color="#fff" />
             </Pressable>
             <Pressable onPress={() => onNavigate('fchv')} style={({ pressed }) => [styles.secondaryButton, pressed && styles.buttonPressed]}>
-              <Text style={styles.secondaryButtonText}>View FCHV dashboard</Text>
+              <Text style={styles.secondaryButtonText}>
+                View FCHV dashboard
+              </Text>
             </Pressable>
           </View>
         </View>
@@ -60,7 +80,7 @@ export default function HomePage({ onNavigate }) {
         {[
           ['151', 'maternal deaths per 100,000 live births in Nepal, per the 2021 national census-based Maternal Mortality Study'],
           ['46.7%', "of Nepal's districts report a maternal mortality ratio at or above 140 per 100,000"],
-          ['1st', 'of the three delays behind most maternal deaths is simply recognizing danger signs in time - the gap Sathi targets first'],
+          ['1st', 'of the three delays behind most maternal deaths is simply recognizing danger signs in time - the gap Maatri Care targets first'],
         ].map(([value, label]) => (
           <View key={value} style={styles.statCard}>
             <Text style={styles.statNumber}>{value}</Text>
@@ -71,7 +91,7 @@ export default function HomePage({ onNavigate }) {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>How Sathi works</Text>
+        <Text style={styles.sectionTitle}>How Maatri Care works</Text>
         <Text style={styles.sectionSubtitle}>Three steps, built to run in the field on a basic phone.</Text>
         <View style={styles.infoGrid}>
           {[

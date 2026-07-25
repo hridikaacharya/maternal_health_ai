@@ -122,7 +122,7 @@ export default function AppNavigator() {
       </ScrollView>
       <View style={styles.footerWrap}>
         <Text style={styles.footer}>
-          Sathi is a decision-support prototype. It does not replace assessment, diagnosis, or treatment by a qualified
+          Maatri Care is a decision-support prototype. It does not replace assessment, diagnosis, or treatment by a qualified
           health worker. In an emergency, seek immediate care.
         </Text>
       </View>

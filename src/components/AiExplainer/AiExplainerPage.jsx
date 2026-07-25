@@ -42,7 +42,7 @@ export default function AiExplainerPage({ currentUser }) {
     setMessages([
       {
         sender: 'ai',
-        text: `Namaste ${name}! I am your Sathi AI Companion.${weeksMessage} Ask me to explain your triage results, clarify pregnancy symptoms, or translate medical terms into simple terms.`,
+        text: `Namaste ${name}! I am your Maatri Care AI Companion.${weeksMessage} Ask me to explain your triage results, clarify pregnancy symptoms, or translate medical terms into simple terms.`,
       },
     ]);
   }, [currentUser, latestAssessment]);
@@ -65,7 +65,7 @@ export default function AiExplainerPage({ currentUser }) {
     setIsLoading(true);
 
     try {
-      const name = currentUser?.name || 'Gita Rai';
+      const name = currentUser?.name || 'Sample Patient';
       const weeksPregnant = latestAssessment?.weeksPregnant || 'Not specified';
       const riskLevel = latestAssessment?.riskLevel || 'LOW RISK';
       const symptoms = latestAssessment?.symptoms?.length > 0 ? latestAssessment.symptoms.join(', ') : 'None reported';
@@ -106,7 +106,7 @@ CRITICAL PROTOCOLS:
         ...prev,
         {
           sender: 'ai',
-          text: 'Unable to reach Sathi translate services. Please check your network or API key configuration.',
+          text: 'Unable to reach Maatri Care translate services. Please check your network or API key configuration.',
         },
       ]);
     } finally {
@@ -118,7 +118,7 @@ CRITICAL PROTOCOLS:
     <View style={styles.card}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}><Feather name="star" size={20} color="#2563EB" /> Sathi AI Explainer</Text>
+          <Text style={styles.headerTitle}><Feather name="star" size={20} color="#2563EB" /> Maatri Care AI Explainer</Text>
           <Text style={styles.headerSubtitle}>Model: gemini-3.5-flash · Mode: Shared Cache Triage Integration</Text>
         </View>
         <View style={styles.statusPill}><Text style={styles.statusPillText}>SYNCED ACTIVE PIPELINE</Text></View>

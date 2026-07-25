@@ -1,7 +1,11 @@
+import { useTranslation } from "react-i18next";
+import { changeLanguage } from "../../i18n";
 import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { colors, radius, shadow } from '../../theme/nativeTheme';
+
+
 
 export default function Header({
   currentView,
@@ -9,14 +13,20 @@ export default function Header({
   alertCount,
   currentUser,
 }) {
+  const { t, i18n } = useTranslation();
   const isFchv = currentUser && currentUser.role === 'fchv';
+  const handleLanguageToggle = () => {
+  const nextLanguage = i18n.language === "en" ? "ne" : "en";
+  changeLanguage(nextLanguage);
+};
+ 
 
   const tabs = currentUser
     ? [
-        { key: 'home', label: 'Home', icon: 'home' },
-        { key: 'patient', label: 'Patient Assessment', icon: 'clipboard' },
-        ...(isFchv ? [{ key: 'fchv', label: 'FCHV Dashboard', icon: 'alert-triangle', badge: alertCount }] : []),
-        { key: 'ai-explain', label: 'AI Explainer', icon: 'star' },
+        { key: 'home', label: t("header.home"), icon: 'home' },
+        { key: 'patient', label: t("header.patientAssessment"), icon: 'clipboard' },
+        ...(isFchv ? [{ key: 'fchv', label: t("header.dashboard"), icon: 'alert-triangle', badge: alertCount }] : []),
+        { key: 'ai-explain', label: t("header.aiExplainer"), icon: 'star' },
         { key: 'profile', label: currentUser.name.split(' ')[0], icon: 'user' },
       ]
     : [
@@ -32,10 +42,24 @@ export default function Header({
           <View style={styles.logoSun} />
         </View>
         <View>
-          <Text style={styles.title}>Sathi</Text>
+          <Text style={styles.title}>{t("common.appName")}</Text>
           <Text style={styles.subtitle}>Maternal Health Companion · MHDSS</Text>
         </View>
       </Pressable>
+       <Pressable
+  onPress={handleLanguageToggle}
+  style={{
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  }}
+>
+  <Text>
+    {i18n.language === "en" ? "नेपाली" : "English"}
+  </Text>
+</Pressable>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs}>
         {tabs.map((tab) => {

@@ -1,6 +1,6 @@
-# Sathi MHDSS
+# Maatri Care MHDSS
 
-Sathi is now an Expo-based React Native app for maternal health decision support. The clinical rule engine, bilingual explanation layer, patient assessment wizard, FCHV dashboard, profile history, and AI explainer are all preserved in native form.
+Maatri Care is now an Expo-based React Native app for maternal health decision support. The clinical rule engine, bilingual explanation layer, patient assessment wizard, FCHV dashboard, profile history, and AI explainer are all preserved in native form.
 
 ## Folder Structure
 

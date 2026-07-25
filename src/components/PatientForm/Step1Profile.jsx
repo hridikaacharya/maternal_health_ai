@@ -1,47 +1,59 @@
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { isWeeksValid } from '../../services/clinicalEngine';
 import { colors, radius, shadow } from '../../theme/nativeTheme';
 
 export default function Step1Profile({ formData, updateField, onNext }) {
+   const { t } = useTranslation();
   const weeks = Number(formData.weeksPregnant) || 0;
   const clampWeeks = (val) => Math.min(42, Math.max(1, val));
 
   return (
     <View>
-      <Text style={styles.title}>Let's start with the basics</Text>
-      <Text style={styles.hint}>This takes about a minute. You can go back and change anything.</Text>
+      <Text style={styles.title}>
+  {t("assessment.profile.title")}
+</Text>
+      <Text style={styles.hint}>
+  {t("assessment.profile.hint")}
+</Text>
 
       <View style={styles.field}>
-        <Text style={styles.label}>How many weeks pregnant?</Text>
+        <Text style={styles.label}>{t("assessment.profile.weeksPregnant")}</Text>
         <View style={styles.stepper}>
-          <Pressable onPress={() => updateField({ weeksPregnant: clampWeeks(weeks - 1) })} style={styles.stepperButton} accessibilityLabel="Decrease weeks">
+          <Pressable onPress={() => updateField({ weeksPregnant: clampWeeks(weeks - 1) })} style={styles.stepperButton} accessibilityLabel={t("assessment.profile.decreaseWeeks")}>
             <Feather name="minus" size={18} color={colors.text} />
           </Pressable>
           <View style={styles.stepperValue}>
             <Text style={styles.stepperNumber}>{weeks}</Text>
-            <Text style={styles.stepperUnit}>weeks</Text>
+            <Text style={styles.stepperUnit}>{t("assessment.profile.weeks")}</Text>
           </View>
-          <Pressable onPress={() => updateField({ weeksPregnant: clampWeeks(weeks + 1) })} style={styles.stepperButton} accessibilityLabel="Increase weeks">
+          <Pressable onPress={() => updateField({ weeksPregnant: clampWeeks(weeks + 1) })} style={styles.stepperButton} accessibilityLabel={t("assessment.profile.increaseWeeks")}>
             <Feather name="plus" size={18} color={colors.text} />
           </Pressable>
         </View>
       </View>
 
       <View style={styles.field}>
-        <Text style={styles.label}>Is this your first pregnancy?</Text>
+        <Text style={styles.label}>
+  {t("assessment.profile.firstPregnancy")}
+</Text>
         <View style={styles.pillRow}>
           {['yes', 'no'].map((val) => (
             <Pressable key={val} onPress={() => updateField({ isFirstPregnancy: val })} style={({ pressed }) => [styles.pill, formData.isFirstPregnancy === val && styles.pillActive, pressed && styles.pressed]}>
-              <Text style={[styles.pillText, formData.isFirstPregnancy === val && styles.pillTextActive]}>{val === 'yes' ? 'Yes' : 'No'}</Text>
+              <Text style={[styles.pillText, formData.isFirstPregnancy === val && styles.pillTextActive]}>{val === "yes"
+  ? t("common.yes")
+  : t("common.no")}</Text>
             </Pressable>
           ))}
         </View>
       </View>
 
       <View style={styles.field}>
-        <Text style={styles.label}>Age</Text>
+       <Text style={styles.label}>
+  {t("assessment.profile.age")}
+</Text>
         <TextInput
           style={styles.input}
           placeholder="e.g. 24"
@@ -54,12 +66,12 @@ export default function Step1Profile({ formData, updateField, onNext }) {
 
       <View style={styles.field}>
         <Text style={styles.label}>
-          Blood pressure <Text style={styles.optional}>(optional)</Text>
+         {t("assessment.profile.bloodPressure")} <Text style={styles.optional}>{t("common.optional")}</Text>
         </Text>
         <View style={styles.bpRow}>
           <TextInput
             style={[styles.input, styles.bpInput]}
-            placeholder="Systolic"
+            placeholder={t("assessment.profile.systolic")}
             placeholderTextColor={colors.textFaint}
             keyboardType="numeric"
             value={formData.bloodPressureSys}
@@ -68,18 +80,22 @@ export default function Step1Profile({ formData, updateField, onNext }) {
           <Text style={styles.bpSeparator}>/</Text>
           <TextInput
             style={[styles.input, styles.bpInput]}
-            placeholder="Diastolic"
+            placeholder={t("assessment.profile.diastolic")}
             placeholderTextColor={colors.textFaint}
             keyboardType="numeric"
             value={formData.bloodPressureDia}
             onChangeText={(value) => updateField({ bloodPressureDia: value })}
           />
         </View>
-        <Text style={styles.note}>Don't have this on hand? Skip it - we'll flag it for your next visit.</Text>
+        <Text style={styles.note}>
+  {t("assessment.profile.bpNote")}
+</Text>
       </View>
 
       <Pressable onPress={onNext} disabled={!isWeeksValid(formData.weeksPregnant)} style={({ pressed }) => [styles.primaryButton, !isWeeksValid(formData.weeksPregnant) && styles.disabled, pressed && styles.pressed]}>
-        <Text style={styles.primaryButtonText}>Continue to Symptoms</Text>
+       <Text style={styles.primaryButtonText}>
+  {t("assessment.profile.continue")}
+</Text>
       </Pressable>
     </View>
   );
